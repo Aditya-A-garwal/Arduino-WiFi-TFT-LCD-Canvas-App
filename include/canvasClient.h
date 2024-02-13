@@ -59,28 +59,6 @@ public:
         return true;
     }
 
-    bool uncompress(uint8_t *codes) {
-
-        if (numSegments == 0) {
-            return false;
-        }
-
-        for (unsigned i = 0, idx = 0; i < numSegments; ++i) {
-
-            segment *s = (segment *)&segments[i];
-            uint8_t code = s->code;
-            uint16_t size = s->size;
-
-            for (unsigned j = 0; j < size; ++j) {
-                codes[j + idx] = code;
-            }
-
-            idx += size;
-        }
-
-        return true;
-    }
-
     uint16_t getNumSegments() {
         return numSegments;
     }
