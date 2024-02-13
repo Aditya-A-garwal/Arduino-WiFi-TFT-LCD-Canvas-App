@@ -78,7 +78,7 @@ void CanvasClient::loadCanvas(uint8_t id) {
             colorBuffer[col] = code2color(client.read());
         }
 
-        for (uint16_t j = 0; j < CANVAS_W; ++j) {
+        for (uint16_t j = 0; j < imageWidth; ++j) {
             canvas->writePixel(row + 1, j + 1, colorBuffer[j]);
         }
     }
