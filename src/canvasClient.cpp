@@ -1,5 +1,49 @@
 #include "canvasClient.h"
 
+CanvasClient::buffer CanvasClient::buf;
+
+bool RowCompressor::compress(uint8_t *codes, uint16_t count) {
+
+    numSegments = 0;
+
+    for (unsigned l = 0, r; l < count; ) {
+        for (r = l; r < count; ++r) {
+            if (codes[r] == codes[l]) {
+                if (r < count-1) {
+                    continue;
+                }
+                r = count;
+            }
+            break;
+        }
+
+        if (++numSegments >= NUM_SEGMENTS) {
+            numSegments = 0;
+            return false;
+        }
+
+        segment *curSegment = (segment *)(&segments[numSegments - 1]);
+        curSegment->code = codes[l];
+        curSegment->size = r - l;
+
+        l = r;
+    }
+
+    return true;
+}
+
+uint16_t RowCompressor::getNumSegments() {
+        return numSegments;
+}
+
+uint16_t RowCompressor::getSegment(uint16_t i) {
+    return segments[i];
+}
+
+uint16_t* RowCompressor::getSegmentArray() {
+    return segments;
+}
+
 CanvasClient::CanvasClient(Canvas *canvas)
     : canvas {canvas}
 {}
@@ -92,7 +136,7 @@ void CanvasClient::saveCanvas(uint8_t id) {
     uint16_t imageHeight = canvas->height() - 2;
     uint16_t imageWidth = canvas->width() - 2;
 
-    CompressedRow compressed;
+    RowCompressor compressed;
 
     unsigned x = 0;
 

@@ -11,7 +11,7 @@
 
 #include "stdint.h"
 
-class CompressedRow {
+class RowCompressor {
 
     constexpr static unsigned NUM_SEGMENTS = 24;
 
@@ -27,49 +27,11 @@ class CompressedRow {
 
 public:
 
-    CompressedRow() {}
+    bool compress(uint8_t *codes, uint16_t count);
 
-    bool compress(uint8_t *codes, uint16_t count) {
-
-        numSegments = 0;
-
-        for (unsigned l = 0, r; l < count; ) {
-            for (r = l; r < count; ++r) {
-                if (codes[r] == codes[l]) {
-                    if (r < count-1) {
-                        continue;
-                    }
-                    r = count;
-                }
-                break;
-            }
-
-            if (++numSegments >= NUM_SEGMENTS) {
-                numSegments = 0;
-                return false;
-            }
-
-            segment *curSegment = (segment *)(&segments[numSegments - 1]);
-            curSegment->code = codes[l];
-            curSegment->size = r - l;
-
-            l = r;
-        }
-
-        return true;
-    }
-
-    uint16_t getNumSegments() {
-        return numSegments;
-    }
-
-    uint16_t getSegment(uint16_t i) {
-        return segments[i];
-    }
-
-    uint16_t *getSegmentArray() {
-        return segments;
-    }
+    uint16_t getNumSegments();
+    uint16_t getSegment(uint16_t i);
+    uint16_t *getSegmentArray();
 
 private:
 };
