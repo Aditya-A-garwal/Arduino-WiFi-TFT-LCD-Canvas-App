@@ -89,57 +89,155 @@ void CanvasClient::loadCanvas(uint8_t id) {
 
 void CanvasClient::saveCanvas(uint8_t id) {
 
-    if (client.connect(IPAddress(serverIP), serverPort) == 0) {
-        Serial.println("Connection Failed");
-        return;
-    }
+    constexpr unsigned BUFFER_LEN = 4096;
+
+    struct buffer {
+
+        uint8_t bytes[BUFFER_LEN] {};
+        unsigned used = 0;
+    } buf;
 
     uint16_t imageHeight = canvas->height() - 2;
     uint16_t imageWidth = canvas->width() - 2;
 
     CompressedRow compressed;
 
-    client.write("\x01", 1);
-    client.write(&id, 1);
-    client.write((const char *)&imageHeight, sizeof(imageHeight));
-    client.write((const char *)&imageWidth, sizeof(imageWidth));
+    unsigned x = 0;
+
+    unsigned readTime = 0;
+
+    unsigned compressionTime = 0;
+
+    unsigned connectionTime = 0;
+    unsigned stopTime = 0;
+
+    unsigned headerTime = 0;
+    unsigned compressedTxTime = 0;
+    unsigned rawTxTime = 0;
+    unsigned flushTime = 0;
+
+    unsigned totalTime = 0;
+    unsigned sendAmt = 0;
+
+    x = micros();
+    if (client.connect(IPAddress(serverIP), serverPort) == 0) {
+        Serial.println("Connection Failed");
+        return;
+    }
+    connectionTime += micros() - x;
+
+    x = micros();
+    buf.bytes[0] = '\x01';
+    buf.bytes[1] = id;
+
+    buf.bytes[2] = imageHeight & 0xFF;
+    buf.bytes[3] = (imageHeight >> 8) & 0xFF;
+
+    buf.bytes[4] = imageWidth & 0xFF;
+    buf.bytes[5] = (imageWidth >> 8) & 0xFF;
+
+    buf.used = 6;
+
+    headerTime = micros() - x;
 
     for (uint16_t i = 0; i < imageHeight; ++i) {
 
-        for (uint16_t j = 0; j < imageWidth; ++j) {
+        x = micros();
+        for (unsigned j = 0; j < imageWidth; ++j) {
             codeBuffer[j] = color2code(canvas->readPixel(i + 1, j + 1));
         }
+        readTime += micros() - x;
 
-        if (compressed.compress(codeBuffer, imageWidth)) {
+        x = micros();
+        bool status = compressed.compress(codeBuffer, imageWidth);
+        compressionTime += micros() - x;
+
+        if (status) {
+
+            x = micros();
 
             uint8_t numSegments = compressed.getNumSegments();
             unsigned size = numSegments * sizeof(uint16_t);
 
-            int _ = client.write(&numSegments, 1);
-            _ += client.write((uint8_t *)(compressed.getSegmentArray()), size);
+            if (buf.used+size+1 >= BUFFER_LEN) {
 
-            if (_ != size+1 || !client.connected()) {
+                int _ = client.write(buf.bytes, buf.used);
+                if (_ != buf.used) {
+                    client.stop();
+                    Serial.println("Error");
+                    return;
+                }
+                buf.used = 0;
 
-                Serial.print("Communication with server failed at row ");
-                Serial.println(i);
-                return;
+                sendAmt += _;
             }
+
+            buf.bytes[buf.used++] = numSegments;
+            memcpy(&(buf.bytes[buf.used]), (uint8_t *)(compressed.getSegmentArray()), size);
+            buf.used += size;
+
+            compressedTxTime += micros() - x;
         }
         else {
 
-            int _ = client.write('\x00');
-            _ += client.write(codeBuffer, imageWidth);
+            x = micros();
 
-            if (_ != imageWidth+1 || !client.connected()) {
+            if (imageWidth+buf.used+1 >= BUFFER_LEN) {
 
-                Serial.print("Communication with server failed at row ");
-                Serial.println(i);
-                return;
+                int _ = client.write(buf.bytes, buf.used);
+                if (_ != buf.used) {
+                    client.stop();
+                    Serial.println("Error");
+                    return;
+                }
+                buf.used = 0;
+
+                sendAmt += _;
             }
+
+            buf.bytes[buf.used++] = '\x00';
+            memcpy(&(buf.bytes[buf.used]), codeBuffer, imageWidth);
+            buf.used += imageWidth;
+
+            rawTxTime += micros() - x;
         }
     }
-    client.flush();
 
-    while (client.connected()) {}
+    x = micros();
+    if (buf.used != 0) {
+        int _ = client.write(buf.bytes, buf.used);
+        if (_ != buf.used) {
+            client.stop();
+            Serial.println("Error");
+            return;
+        }
+        sendAmt += buf.used;
+    }
+    rawTxTime += micros() - x;
+
+    x = micros();
+    client.flush();
+    flushTime += micros() - x;
+
+    x = micros();
     client.stop();
+    stopTime += micros() - x;
+
+    Serial.println();
+    Serial.println();
+    Serial.print("Connection Time: "); Serial.print(connectionTime / 1000); Serial.println(" ms"); totalTime += connectionTime;
+    Serial.print("Stop Time: "); Serial.print(stopTime / 1000); Serial.println(" ms"); totalTime += stopTime;
+    Serial.println();
+    Serial.print("Read Time: "); Serial.print(readTime / 1000); Serial.println(" ms"); totalTime += readTime;
+    Serial.print("Compression Time: "); Serial.print(compressionTime / 1000); Serial.println(" ms"); totalTime += compressionTime;
+    Serial.println();
+    Serial.print("Header Tx Time: "); Serial.print(headerTime / 1000); Serial.println(" ms"); totalTime += headerTime;
+    Serial.print("Compressed Tx Time: "); Serial.print(compressedTxTime / 1000); Serial.println(" ms"); totalTime += compressedTxTime;
+    Serial.print("Raw Tx Time: "); Serial.print(rawTxTime / 1000); Serial.println(" ms"); totalTime += rawTxTime;
+    Serial.print("Flush Tx Time: "); Serial.print(flushTime / 1000); Serial.println(" ms"); totalTime += flushTime;
+    Serial.println();
+    Serial.print("Total Time: "); Serial.print(totalTime / 1000); Serial.println(" ms");
+    Serial.println();
+    Serial.print("Bytes sent: "); Serial.println(sendAmt);
+    Serial.println();
 }
