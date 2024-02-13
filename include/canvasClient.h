@@ -83,6 +83,15 @@ class CanvasClient {
 
     constexpr static uint16_t IP_LEN = 15;
 
+    constexpr static unsigned BUFFER_LEN = 4096;
+    struct buffer {
+
+        uint8_t bytes[BUFFER_LEN] {};
+        unsigned used = 0;
+    };
+
+    static buffer buf;
+
     Canvas *canvas;
 
     char ssid[MAX_SSID_LEN];

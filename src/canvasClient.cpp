@@ -89,14 +89,6 @@ void CanvasClient::loadCanvas(uint8_t id) {
 
 void CanvasClient::saveCanvas(uint8_t id) {
 
-    constexpr unsigned BUFFER_LEN = 4096;
-
-    struct buffer {
-
-        uint8_t bytes[BUFFER_LEN] {};
-        unsigned used = 0;
-    } buf;
-
     uint16_t imageHeight = canvas->height() - 2;
     uint16_t imageWidth = canvas->width() - 2;
 
