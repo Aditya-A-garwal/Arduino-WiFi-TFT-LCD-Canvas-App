@@ -23,5 +23,8 @@ jobs:
       - name: Fetch Library Dependencies
         run: pio pkg install
 
+      - name: Create Mock arduino_secrets.h File
+        run: echo -e "#define SECRET_SSID \"MOCK_SSID\"\n#define SECRET_PASS \"MOCK_PASS\"\n#define SERVER_IP \"127.0.0.1\"\n" > include/arduino_secrets.h
+
       - name: Build PlatformIO Project
         run: pio run
