@@ -34,10 +34,6 @@ uint16_t RowCompressor::getNumSegments() {
         return numSegments;
 }
 
-uint16_t RowCompressor::getSegment(uint16_t i) {
-    return segments[i];
-}
-
 uint16_t* RowCompressor::getSegmentArray() {
     return segments;
 }

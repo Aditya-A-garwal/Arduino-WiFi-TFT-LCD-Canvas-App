@@ -30,7 +30,6 @@ public:
     bool compress(uint8_t *codes, uint16_t count);
 
     uint16_t getNumSegments();
-    uint16_t getSegment(uint16_t i);
     uint16_t *getSegmentArray();
 
 private:
