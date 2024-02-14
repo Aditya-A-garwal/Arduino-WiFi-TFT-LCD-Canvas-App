@@ -4,3 +4,6 @@
 .vscode/launch.json
 .vscode/ipch
 .idea/
+include/arduino_secrets.h
+**arduino_secrets**
+
