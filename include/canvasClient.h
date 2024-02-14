@@ -37,8 +37,7 @@ private:
 
 class CanvasClient {
 
-    constexpr static unsigned BUFFER_LEN = 4096;
-    constexpr static unsigned CLIENT_BUFFER_LEN = 4096;
+    constexpr static unsigned CLIENT_BUFFER_LEN = 2048;
     constexpr static unsigned ROW_BUFFER_LEN = 512;
 
     constexpr static unsigned MAX_SSID_LEN = 64;
@@ -48,17 +47,13 @@ class CanvasClient {
 
     struct client_buffer_t {
 
-        uint8_t bytes[BUFFER_LEN];
+        uint8_t bytes[CLIENT_BUFFER_LEN];
         unsigned size = 0;
         unsigned totalSent = 0;
 
         bool has_space(unsigned insertsize) {
 
             return (size + insertsize) <= CLIENT_BUFFER_LEN;
-
-            if ((size + insertsize) >= CLIENT_BUFFER_LEN) {
-                return false;
-            }
         }
 
         void append(const uint8_t *insertbytes, unsigned insertsize) {
@@ -88,13 +83,7 @@ class CanvasClient {
         uint16_t color[ROW_BUFFER_LEN];
         uint8_t code[ROW_BUFFER_LEN];
     };
-    struct buffer {
 
-        uint8_t bytes[BUFFER_LEN] {};
-        unsigned used = 0;
-    };
-
-    // static buffer buf;
     static client_buffer_t client_buffer;
     static row_buffer_t rowbuf;
 
