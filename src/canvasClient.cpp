@@ -1,7 +1,5 @@
 #include "canvasClient.h"
 
-CanvasClient::buffer CanvasClient::buf;
-
 bool RowCompressor::compress(uint8_t *codes, uint16_t count) {
 
     numSegments = 0;
@@ -44,6 +42,10 @@ uint16_t* RowCompressor::getSegmentArray() {
     return segments;
 }
 
+
+CanvasClient::client_buffer_t CanvasClient::client_buffer;
+CanvasClient::row_buffer_t CanvasClient::rowbuf;
+
 CanvasClient::CanvasClient(Canvas *canvas)
     : canvas {canvas}
 {}
@@ -65,6 +67,8 @@ void CanvasClient::setServer(const char serverIp[], const uint16_t port) {
 }
 
 CanvasClient::ConnectionStatus CanvasClient::connect(uint16_t maxAttempt) {
+
+    signed status = WL_IDLE_STATUS;
 
     if (WiFi.status() == WL_NO_MODULE) {
         return NO_MODULE;
@@ -119,11 +123,11 @@ void CanvasClient::loadCanvas(uint8_t id) {
                 return;
             }
 
-            colorBuffer[col] = code2color(client.read());
+            rowbuf.color[col] = code2color(client.read());
         }
 
         for (uint16_t j = 0; j < imageWidth; ++j) {
-            canvas->writePixel(row + 1, j + 1, colorBuffer[j]);
+            canvas->writePixel(row + 1, j + 1, rowbuf.color[j]);
         }
     }
 
@@ -153,7 +157,6 @@ void CanvasClient::saveCanvas(uint8_t id) {
     unsigned flushTime = 0;
 
     unsigned totalTime = 0;
-    unsigned sendAmt = 0;
 
     x = micros();
     if (client.connect(IPAddress(serverIP), serverPort) == 0) {
@@ -163,54 +166,41 @@ void CanvasClient::saveCanvas(uint8_t id) {
     connectionTime += micros() - x;
 
     x = micros();
-    buf.bytes[0] = '\x01';
-    buf.bytes[1] = id;
+    client_buffer.append((const uint8_t *)"\x01", 1);
+    client_buffer.append(&id, 1);
 
-    buf.bytes[2] = imageHeight & 0xFF;
-    buf.bytes[3] = (imageHeight >> 8) & 0xFF;
-
-    buf.bytes[4] = imageWidth & 0xFF;
-    buf.bytes[5] = (imageWidth >> 8) & 0xFF;
-
-    buf.used = 6;
-
+    client_buffer.append((const uint8_t *)&imageHeight, 2);
+    client_buffer.append((const uint8_t *)&imageWidth, 2);
     headerTime = micros() - x;
 
     for (uint16_t i = 0; i < imageHeight; ++i) {
 
         x = micros();
         for (unsigned j = 0; j < imageWidth; ++j) {
-            codeBuffer[j] = color2code(canvas->readPixel(i + 1, j + 1));
+            rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
         }
         readTime += micros() - x;
 
         x = micros();
-        bool status = compressed.compress(codeBuffer, imageWidth);
+        bool compressable = compressed.compress(rowbuf.code, imageWidth);
         compressionTime += micros() - x;
 
-        if (status) {
+        if (compressable) {
 
             x = micros();
 
             uint8_t numSegments = compressed.getNumSegments();
             unsigned size = numSegments * sizeof(uint16_t);
 
-            if (buf.used+size+1 >= BUFFER_LEN) {
-
-                int _ = client.write(buf.bytes, buf.used);
-                if (_ != buf.used) {
+            if (!client_buffer.has_space(1 + size)) {
+                if (!client_buffer.flush(&client)) {
                     client.stop();
-                    Serial.println("Error");
+                    Serial.println("error");
                     return;
                 }
-                buf.used = 0;
-
-                sendAmt += _;
             }
-
-            buf.bytes[buf.used++] = numSegments;
-            memcpy(&(buf.bytes[buf.used]), (uint8_t *)(compressed.getSegmentArray()), size);
-            buf.used += size;
+            client_buffer.append(&numSegments, 1);
+            client_buffer.append((const uint8_t *)compressed.getSegmentArray(), size);
 
             compressedTxTime += micros() - x;
         }
@@ -218,36 +208,25 @@ void CanvasClient::saveCanvas(uint8_t id) {
 
             x = micros();
 
-            if (imageWidth+buf.used+1 >= BUFFER_LEN) {
-
-                int _ = client.write(buf.bytes, buf.used);
-                if (_ != buf.used) {
+            if (!client_buffer.has_space(1 + imageWidth)) {
+                if (!client_buffer.flush(&client)) {
                     client.stop();
-                    Serial.println("Error");
+                    Serial.println("error");
                     return;
                 }
-                buf.used = 0;
-
-                sendAmt += _;
             }
-
-            buf.bytes[buf.used++] = '\x00';
-            memcpy(&(buf.bytes[buf.used]), codeBuffer, imageWidth);
-            buf.used += imageWidth;
+            client_buffer.append((const uint8_t *)"\x00", 1);
+            client_buffer.append(rowbuf.code, imageWidth);
 
             rawTxTime += micros() - x;
         }
     }
 
     x = micros();
-    if (buf.used != 0) {
-        int _ = client.write(buf.bytes, buf.used);
-        if (_ != buf.used) {
-            client.stop();
-            Serial.println("Error");
-            return;
-        }
-        sendAmt += buf.used;
+    if (!client_buffer.flush(&client)) {
+        client.stop();
+        Serial.println("error");
+        return;
     }
     rawTxTime += micros() - x;
 
@@ -274,6 +253,6 @@ void CanvasClient::saveCanvas(uint8_t id) {
     Serial.println();
     Serial.print("Total Time: "); Serial.print(totalTime / 1000); Serial.println(" ms");
     Serial.println();
-    Serial.print("Bytes sent: "); Serial.println(sendAmt);
+    Serial.print("Bytes sent: "); Serial.println(client_buffer.totalSent); client_buffer.totalSent = 0;
     Serial.println();
 }

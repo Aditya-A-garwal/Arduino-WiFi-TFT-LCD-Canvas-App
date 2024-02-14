@@ -38,21 +38,66 @@ private:
 
 class CanvasClient {
 
-    constexpr static int DISPLAYBUF_LEN = 512;
-
-    constexpr static uint16_t MAX_SSID_LEN = 64;
-    constexpr static uint16_t MAX_PASS_LEN = 64;
-
-    constexpr static uint16_t IP_LEN = 15;
-
     constexpr static unsigned BUFFER_LEN = 4096;
+    constexpr static unsigned CLIENT_BUFFER_LEN = 4096;
+    constexpr static unsigned ROW_BUFFER_LEN = 512;
+
+    constexpr static unsigned MAX_SSID_LEN = 64;
+    constexpr static unsigned MAX_PASS_LEN = 64;
+
+    constexpr static unsigned IP_LEN = 15;
+
+    struct client_buffer_t {
+
+        uint8_t bytes[BUFFER_LEN];
+        unsigned size = 0;
+        unsigned totalSent = 0;
+
+        bool has_space(unsigned insertsize) {
+
+            return (size + insertsize) <= CLIENT_BUFFER_LEN;
+
+            if ((size + insertsize) >= CLIENT_BUFFER_LEN) {
+                return false;
+            }
+        }
+
+        void append(const uint8_t *insertbytes, unsigned insertsize) {
+
+            memcpy(&bytes[size], insertbytes, insertsize);
+            size += insertsize;
+        }
+
+        bool flush(WiFiClient *client) {
+
+            if (size == 0) {
+                return true;
+            }
+
+            unsigned sent = client->write(bytes, size);
+            if (sent != size) {
+                return false;
+            }
+            totalSent += sent;
+
+            size = 0;
+            return true;
+        }
+    };
+
+    union row_buffer_t {
+        uint16_t color[ROW_BUFFER_LEN];
+        uint8_t code[ROW_BUFFER_LEN];
+    };
     struct buffer {
 
         uint8_t bytes[BUFFER_LEN] {};
         unsigned used = 0;
     };
 
-    static buffer buf;
+    // static buffer buf;
+    static client_buffer_t client_buffer;
+    static row_buffer_t rowbuf;
 
     Canvas *canvas;
 
@@ -62,12 +107,7 @@ class CanvasClient {
     char serverIP[IP_LEN];
     uint16_t serverPort;
 
-    int status = WL_IDLE_STATUS;
-
     WiFiClient client;
-
-    uint16_t colorBuffer[512];
-    uint8_t codeBuffer[512];
 
 public:
 
