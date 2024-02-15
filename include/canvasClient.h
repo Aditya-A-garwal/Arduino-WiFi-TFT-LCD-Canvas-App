@@ -86,6 +86,7 @@ class CanvasClient {
 
     static client_buffer_t client_buffer;
     static row_buffer_t rowbuf;
+    static RowCompressor compressor;
 
     Canvas *canvas;
 

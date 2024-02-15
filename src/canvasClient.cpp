@@ -41,6 +41,7 @@ uint16_t* RowCompressor::getSegmentArray() {
 
 CanvasClient::client_buffer_t CanvasClient::client_buffer;
 CanvasClient::row_buffer_t CanvasClient::rowbuf;
+RowCompressor CanvasClient::compressor;
 
 CanvasClient::CanvasClient(Canvas *canvas)
     : canvas {canvas}
@@ -136,8 +137,6 @@ void CanvasClient::saveCanvas(uint8_t id) {
     uint16_t imageHeight = canvas->height() - 2;
     uint16_t imageWidth = canvas->width() - 2;
 
-    RowCompressor compressed;
-
     unsigned x = 0;
 
     unsigned readTime = 0;
@@ -178,14 +177,14 @@ void CanvasClient::saveCanvas(uint8_t id) {
         readTime += micros() - x;
 
         x = micros();
-        bool compressable = compressed.compress(rowbuf.code, imageWidth);
+        bool compressable = compressor.compress(rowbuf.code, imageWidth);
         compressionTime += micros() - x;
 
         if (compressable) {
 
             x = micros();
 
-            uint8_t numSegments = compressed.getNumSegments();
+            uint8_t numSegments = compressor.getNumSegments();
             unsigned size = numSegments * sizeof(uint16_t);
 
             if (!client_buffer.has_space(1 + size)) {
@@ -196,7 +195,7 @@ void CanvasClient::saveCanvas(uint8_t id) {
                 }
             }
             client_buffer.append(&numSegments, 1);
-            client_buffer.append((const uint8_t *)compressed.getSegmentArray(), size);
+            client_buffer.append((const uint8_t *)compressor.getSegmentArray(), size);
 
             compressedTxTime += micros() - x;
         }
