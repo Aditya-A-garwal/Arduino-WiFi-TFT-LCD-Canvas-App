@@ -7,12 +7,10 @@ bool RowCompressor::compress(uint8_t *codes, uint16_t count) {
     for (unsigned l = 0, r; l < count; ) {
         for (r = l; r < count; ++r) {
             if (codes[r] == codes[l]) {
-                if (r < count-1) {
-                    continue;
+                if (r == count || codes[l] != codes[r]) {
+                    break;
                 }
-                r = count;
             }
-            break;
         }
 
         if (++numSegments >= NUM_SEGMENTS) {
