@@ -6,8 +6,8 @@ bool RowCompressor::compress(uint8_t *codes, uint16_t count) {
 
     for (unsigned l = 0, r; l < count; l = r) {
         for (r = l; r <= count; ++r) {
-                if (r == count || codes[l] != codes[r]) {
-                    break;
+            if (r == count || codes[l] != codes[r]) {
+                break;
             }
         }
 
@@ -84,7 +84,7 @@ void CanvasClient::disconnect() {
     WiFi.end();
 }
 
-void CanvasClient::loadCanvas(uint8_t id) {
+void CanvasClient::loadCanvas(uint8_t id, CompressedCanvas *compressed) {
 
     if (!client.connect(IPAddress(serverIP), serverPort)) {
         Serial.println("Connection Failed");
@@ -120,13 +120,19 @@ void CanvasClient::loadCanvas(uint8_t id) {
         for (uint16_t j = 0; j < imageWidth; ++j) {
             canvas->writePixel(row + 1, j + 1, rowbuf.color[j]);
         }
+
+        for (uint16_t j = 0; j < imageWidth; ++j) {
+            rowbuf.code[j] = color2code(rowbuf.color[j]); //! this is very risky code
+        }
+
+        compressed[row].compress(rowbuf.code, imageWidth); //! this code can be optimized
     }
 
     while (client.connected()) {}
     client.stop();
 }
 
-void CanvasClient::saveCanvas(uint8_t id) {
+void CanvasClient::saveCanvas(uint8_t id, CompressedCanvas *compressed) {
 
     uint16_t imageHeight = canvas->height() - 2;
     uint16_t imageWidth = canvas->width() - 2;
@@ -165,8 +171,12 @@ void CanvasClient::saveCanvas(uint8_t id) {
     for (uint16_t i = 0; i < imageHeight; ++i) {
 
         x = micros();
-        for (unsigned j = 0; j < imageWidth; ++j) {
-            rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
+
+        // see if this row can be uncompressed right now
+        if (!compressed[i].uncompress(rowbuf.code)) {
+            for (unsigned j = 0; j < imageWidth; ++j) {
+                rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
+            }
         }
         readTime += micros() - x;
 

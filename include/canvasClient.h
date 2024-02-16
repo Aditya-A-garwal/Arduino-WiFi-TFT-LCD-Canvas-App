@@ -38,7 +38,7 @@ private:
 
 class CanvasClient {
 
-    constexpr static unsigned CLIENT_BUFFER_LEN = 2048;
+    constexpr static unsigned CLIENT_BUFFER_LEN = 4096;
     constexpr static unsigned ROW_BUFFER_LEN = 512;
 
     constexpr static unsigned MAX_SSID_LEN = 64;
@@ -116,8 +116,8 @@ public:
     ConnectionStatus connect(uint16_t maxAttempt);
     void disconnect();
 
-    void loadCanvas(uint8_t id);
-    void saveCanvas(uint8_t id);
+    void loadCanvas(uint8_t id, CompressedCanvas *compressed);
+    void saveCanvas(uint8_t id, CompressedCanvas *compressed);
 
 private:
 

@@ -36,7 +36,14 @@ Button infoButton(INFO_X, INFO_Y, INFO_W, INFO_H, INFO_C, "INFO", &tft);
 
 CanvasClient client(&canvas);
 
-void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t));
+GFXcanvas1 canvasBuffer(CANVAS_BUFFER_W, CANVAS_BUFFER_H);
+
+CompressedCanvas compressed[CANVAS_H - 2];
+uint8_t rawCode[CANVAS_W - 2] {};
+
+void clearCompressedCanvas();
+
+void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t, CompressedCanvas *));
 void drawLowerWidgets();
 
 void setup(void) {
@@ -55,15 +62,49 @@ void setup(void) {
     logo.draw();
     canvas.draw();
     drawLowerWidgets();
+
+    clearCompressedCanvas();
 }
 
 void loop(void) {
 
     uint16_t x, y;
+    unsigned canvasUpdateTime = 0;
     getTouchCoors(&x, &y);
 
     // update each widget
-    canvas.update(x, y, thicknessSelector.getThickness(), colorSelector.getColor());
+    canvasUpdateTime = micros();
+    if (canvas.update(x, y, thicknessSelector.getThickness(), colorSelector.getColor())) {
+
+        const uint16_t cx = x - CANVAS_X - 1;
+        const uint16_t cy = y - CANVAS_Y - 1;
+
+        const uint16_t thickness = thicknessSelector.getThickness();
+        const uint16_t color = colorSelector.getColor();
+        const uint8_t code = color2code(color);
+
+        const uint16_t row_origin = cy - thickness;
+        const uint16_t col_origin = cx - thickness;
+
+        canvasBuffer.fillCircle(thickness, thickness, thickness, 1);
+
+        for (unsigned i = 0; i <= thickness*2; ++i) {
+
+            if (!compressed[i + row_origin].uncompress(rawCode)) { //! it is possible for only a prefix to be compressed, dont ignore that case
+                continue;
+            }
+
+            for (unsigned j = 0; j <= thickness*2; ++j) {
+
+                if (canvasBuffer.getPixel(j, i)) {
+                    rawCode[j + col_origin] = code;
+                }
+            }
+
+            compressed[i + row_origin].compress(rawCode, CANVAS_W - 2);
+        }
+    }
+    canvasUpdateTime = (micros() - canvasUpdateTime) / 1000;
 
     if (colorSelector.update(x, y)) {
 
@@ -117,21 +158,31 @@ void loop(void) {
 
     if (clearButton.update(x, y)) {
         canvas.clear();
+        clearCompressedCanvas();
     }
 
     if (infoButton.update(x, y)) {
 
     }
 
-    delay(2);
+    if (canvasUpdateTime < 5) {
+        delay(5 - canvasUpdateTime);
+    }
 }
 
-void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t)) {
+void clearCompressedCanvas() {
+    memset(rawCode, 8, sizeof(rawCode));
+    for (unsigned i = 0; i < CANVAS_H-2; ++i) {
+        compressed[i].compress(rawCode, CANVAS_W-2);
+    }
+}
+
+void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t, CompressedCanvas *)) {
 
     uint8_t selectedSlot = slotSelector.getSlot();
 
     if (selectedSlot != 0) {
-        (client->*method)(selectedSlot);
+        (client->*method)(selectedSlot, compressed);
     }
 
     slotSelector.clear();

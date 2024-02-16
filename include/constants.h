@@ -112,4 +112,7 @@ const uint16_t SLOT_MENU_Y = COLOR_SELECTOR_Y - 8;
 const uint16_t SLOT_MENU_W = SAVE_W * 3;
 const uint16_t SLOT_MENU_H = SAVE_H * 4;
 
+constexpr unsigned CANVAS_BUFFER_W = 32;
+constexpr unsigned CANVAS_BUFFER_H = 32;
+
 #endif
