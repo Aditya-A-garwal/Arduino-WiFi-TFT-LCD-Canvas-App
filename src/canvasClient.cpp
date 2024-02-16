@@ -4,12 +4,10 @@ bool RowCompressor::compress(uint8_t *codes, uint16_t count) {
 
     numSegments = 0;
 
-    for (unsigned l = 0, r; l < count; ) {
-        for (r = l; r < count; ++r) {
-            if (codes[r] == codes[l]) {
+    for (unsigned l = 0, r; l < count; l = r) {
+        for (r = l; r <= count; ++r) {
                 if (r == count || codes[l] != codes[r]) {
                     break;
-                }
             }
         }
 
@@ -21,8 +19,6 @@ bool RowCompressor::compress(uint8_t *codes, uint16_t count) {
         segment *curSegment = (segment *)(&segments[numSegments - 1]);
         curSegment->code = codes[l];
         curSegment->size = r - l;
-
-        l = r;
     }
 
     return true;
