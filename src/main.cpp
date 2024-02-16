@@ -17,6 +17,7 @@
 #include "widgets/button.h"
 
 #include "canvasClient.h"
+#include "compressedCanvas.h"
 
 
 MCUFRIEND_kbv tft;

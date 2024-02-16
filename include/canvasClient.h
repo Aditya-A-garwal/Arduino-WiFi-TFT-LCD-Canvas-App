@@ -7,6 +7,7 @@
 #include "constants.h"
 #include "helper.h"
 
+#include "compressedCanvas.h"
 #include "widgets/canvas.h"
 
 #include "stdint.h"
