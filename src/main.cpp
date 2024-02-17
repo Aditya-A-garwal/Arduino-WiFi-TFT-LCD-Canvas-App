@@ -9,7 +9,6 @@
 
 #include "touch.h"
 
-#include "widgets/logo.h"
 #include "widgets/canvas.h"
 #include "widgets/colorSelector.h"
 #include "widgets/thicknessSelector.h"
@@ -22,8 +21,6 @@
 
 
 MCUFRIEND_kbv tft;
-
-Logo logo(LOGO_X, LOGO_Y, LOGO_C, &tft);
 
 Canvas canvas(CANVAS_X, CANVAS_Y, CANVAS_W, CANVAS_H, &tft);
 ColorSelector colorSelector(COLOR_SELECTOR_X, COLOR_SELECTOR_Y, COLOR_SELECTOR_HPAD, COLOR_SELECTOR_VPAD, PAINT_RADIUS, &tft);
@@ -61,7 +58,6 @@ void setup(void) {
 
     tft.fillScreen(BLACK);
 
-    logo.draw();
     canvas.draw();
     drawLowerWidgets();
 
