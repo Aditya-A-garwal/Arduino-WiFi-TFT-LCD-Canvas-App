@@ -16,8 +16,9 @@
 #include "widgets/buttonGrid.h"
 #include "widgets/button.h"
 
+#include "compressor.h"
+
 #include "canvasClient.h"
-#include "compressedCanvas.h"
 
 
 MCUFRIEND_kbv tft;
@@ -38,12 +39,13 @@ CanvasClient client(&canvas);
 
 GFXcanvas1 canvasBuffer(CANVAS_BUFFER_W, CANVAS_BUFFER_H);
 
-CompressedCanvas compressed[CANVAS_H - 2];
+// CompressedRow compressed[CANVAS_H - 2];
+Compressor<CANVAS_BUFFER_MAX_SEGMENTS> compressed[CANVAS_H - 2];
 uint8_t rawCode[CANVAS_W - 2] {};
 
 void clearCompressedCanvas();
 
-void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t, CompressedCanvas *));
+void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *));
 void drawLowerWidgets();
 
 void setup(void) {
@@ -68,11 +70,13 @@ void setup(void) {
 
 void loop(void) {
 
-    uint16_t x, y;
-    unsigned canvasUpdateTime = 0;
+    unsigned widgetUpdateTime = 0;
+
+    widgetUpdateTime = 0;
+
+    unsigned x, y;
     getTouchCoors(&x, &y);
 
-    canvasUpdateTime = micros();
     {
         const uint16_t thickness = thicknessSelector.getThickness();
         const uint16_t color = colorSelector.getColor();
@@ -94,7 +98,7 @@ void loop(void) {
 
             for (unsigned i = row_lo, col_end; i <= row_hi; ++i) {
 
-                if (compressed[i].pixelCount()-1 < col_lo) {
+                if (compressed[i].getPrefixSize()-1 < col_lo) {
                     continue;
                 }
                 compressed[i].uncompress(rawCode);
@@ -111,7 +115,6 @@ void loop(void) {
             }
         }
     }
-    canvasUpdateTime = (micros() - canvasUpdateTime) / 1000;
 
     if (colorSelector.update(x, y)) {
 
@@ -172,8 +175,9 @@ void loop(void) {
 
     }
 
-    if (canvasUpdateTime < 5) {
-        delay(5 - canvasUpdateTime);
+    widgetUpdateTime = (micros() - widgetUpdateTime) / 1000;
+    if (widgetUpdateTime < 10) { // 100 frames per second
+        delay(10 - widgetUpdateTime);
     }
 }
 
@@ -184,7 +188,7 @@ void clearCompressedCanvas() {
     }
 }
 
-void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t, CompressedCanvas *)) {
+void executeSlotSelection(CanvasClient *client, void (CanvasClient::*method)(uint8_t, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *)) {
 
     uint8_t selectedSlot = slotSelector.getSlot();
 

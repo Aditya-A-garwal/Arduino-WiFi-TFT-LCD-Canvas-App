@@ -7,34 +7,10 @@
 #include "constants.h"
 #include "helper.h"
 
-#include "compressedCanvas.h"
 #include "widgets/canvas.h"
+#include "compressor.h"
 
 #include "stdint.h"
-
-class RowCompressor {
-
-    constexpr static unsigned NUM_SEGMENTS = 24;
-
-    struct segment {
-        uint16_t code: 4;
-        uint16_t size: 9;
-        uint16_t _: 3;
-    };
-    static_assert(sizeof(segment) == sizeof(uint16_t));
-
-    uint16_t segments[NUM_SEGMENTS];
-    uint16_t numSegments;
-
-public:
-
-    bool compress(uint8_t *codes, uint16_t count);
-
-    uint16_t getNumSegments();
-    uint16_t *getSegmentArray();
-
-private:
-};
 
 class CanvasClient {
 
@@ -87,7 +63,7 @@ class CanvasClient {
 
     static client_buffer_t client_buffer;
     static row_buffer_t rowbuf;
-    static RowCompressor compressor;
+    static Compressor<CLIENT_BUFFER_MAX_SEGMENTS> compressor;
 
     Canvas *canvas;
 
@@ -116,8 +92,8 @@ public:
     ConnectionStatus connect(uint16_t maxAttempt);
     void disconnect();
 
-    void loadCanvas(uint8_t id, CompressedCanvas *compressed);
-    void saveCanvas(uint8_t id, CompressedCanvas *compressed);
+    void loadCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *compressed);
+    void saveCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *compressed);
 
 private:
 

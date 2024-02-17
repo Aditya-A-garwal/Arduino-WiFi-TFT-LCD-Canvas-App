@@ -1,41 +1,9 @@
 #include "canvasClient.h"
 
-bool RowCompressor::compress(uint8_t *codes, uint16_t count) {
-
-    numSegments = 0;
-
-    for (unsigned l = 0, r; l < count; l = r) {
-        for (r = l; r <= count; ++r) {
-            if (r == count || codes[l] != codes[r]) {
-                break;
-            }
-        }
-
-        if (++numSegments >= NUM_SEGMENTS) {
-            numSegments = 0;
-            return false;
-        }
-
-        segment *curSegment = (segment *)(&segments[numSegments - 1]);
-        curSegment->code = codes[l];
-        curSegment->size = r - l;
-    }
-
-    return true;
-}
-
-uint16_t RowCompressor::getNumSegments() {
-        return numSegments;
-}
-
-uint16_t* RowCompressor::getSegmentArray() {
-    return segments;
-}
-
-
 CanvasClient::client_buffer_t CanvasClient::client_buffer;
 CanvasClient::row_buffer_t CanvasClient::rowbuf;
-RowCompressor CanvasClient::compressor;
+
+Compressor<CLIENT_BUFFER_MAX_SEGMENTS> CanvasClient::compressor;
 
 CanvasClient::CanvasClient(Canvas *canvas)
     : canvas {canvas}
@@ -84,7 +52,7 @@ void CanvasClient::disconnect() {
     WiFi.end();
 }
 
-void CanvasClient::loadCanvas(uint8_t id, CompressedCanvas *compressed) {
+void CanvasClient::loadCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *compressed) {
 
     if (!client.connect(IPAddress(serverIP), serverPort)) {
         Serial.println("Connection Failed");
@@ -132,59 +100,39 @@ void CanvasClient::loadCanvas(uint8_t id, CompressedCanvas *compressed) {
     client.stop();
 }
 
-void CanvasClient::saveCanvas(uint8_t id, CompressedCanvas *compressed) {
+void CanvasClient::saveCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *compressed) {
 
     uint16_t imageHeight = canvas->height() - 2;
     uint16_t imageWidth = canvas->width() - 2;
 
-    unsigned x = 0;
-
-    unsigned readTime = 0;
-
-    unsigned compressionTime = 0;
-
-    unsigned connectionTime = 0;
-    unsigned stopTime = 0;
-
-    unsigned headerTime = 0;
-    unsigned compressedTxTime = 0;
-    unsigned rawTxTime = 0;
-    unsigned flushTime = 0;
-
-    unsigned totalTime = 0;
-
-    x = micros();
     if (client.connect(IPAddress(serverIP), serverPort) == 0) {
         Serial.println("Connection Failed");
         return;
     }
-    connectionTime += micros() - x;
 
-    x = micros();
     client_buffer.append((const uint8_t *)"\x01", 1);
     client_buffer.append(&id, 1);
 
     client_buffer.append((const uint8_t *)&imageHeight, 2);
     client_buffer.append((const uint8_t *)&imageWidth, 2);
-    headerTime = micros() - x;
 
-    for (uint16_t i = 0; i < imageHeight; ++i) {
+    for (unsigned i = 0; i < imageHeight; ++i) {
 
-        x = micros();
-        for (unsigned j = compressed[i].uncompress(rowbuf.code); j < imageWidth; ++j) {
-            rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
+        bool compressable = true;
+
+        if (compressed[i].getPrefixSize() == imageWidth) {
+            compressor.transfer(compressed);
         }
-        readTime += micros() - x;
-
-        x = micros();
-        bool compressable = compressor.compress(rowbuf.code, imageWidth);
-        compressionTime += micros() - x;
+        else {
+            for (unsigned j = compressed[i].uncompress(rowbuf.code); j < imageWidth; ++j) {
+                rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
+            }
+            compressable = compressor.compress(rowbuf.code, imageWidth);
+        }
 
         if (compressable) {
 
-            x = micros();
-
-            uint8_t numSegments = compressor.getNumSegments();
+            uint8_t numSegments = compressor.getSegmentCount();
             unsigned size = numSegments * sizeof(uint16_t);
 
             if (!client_buffer.has_space(1 + size)) {
@@ -195,13 +143,9 @@ void CanvasClient::saveCanvas(uint8_t id, CompressedCanvas *compressed) {
                 }
             }
             client_buffer.append(&numSegments, 1);
-            client_buffer.append((const uint8_t *)compressor.getSegmentArray(), size);
-
-            compressedTxTime += micros() - x;
+            client_buffer.append((const uint8_t *)compressor.getRawSegmentAr(), size);
         }
         else {
-
-            x = micros();
 
             if (!client_buffer.has_space(1 + imageWidth)) {
                 if (!client_buffer.flush(&client)) {
@@ -212,42 +156,14 @@ void CanvasClient::saveCanvas(uint8_t id, CompressedCanvas *compressed) {
             }
             client_buffer.append((const uint8_t *)"\x00", 1);
             client_buffer.append(rowbuf.code, imageWidth);
-
-            rawTxTime += micros() - x;
         }
     }
 
-    x = micros();
     if (!client_buffer.flush(&client)) {
         client.stop();
         Serial.println("error");
         return;
     }
-    rawTxTime += micros() - x;
-
-    x = micros();
     client.flush();
-    flushTime += micros() - x;
-
-    x = micros();
     client.stop();
-    stopTime += micros() - x;
-
-    Serial.println();
-    Serial.println();
-    Serial.print("Connection Time: "); Serial.print(connectionTime / 1000); Serial.println(" ms"); totalTime += connectionTime;
-    Serial.print("Stop Time: "); Serial.print(stopTime / 1000); Serial.println(" ms"); totalTime += stopTime;
-    Serial.println();
-    Serial.print("Read Time: "); Serial.print(readTime / 1000); Serial.println(" ms"); totalTime += readTime;
-    Serial.print("Compression Time: "); Serial.print(compressionTime / 1000); Serial.println(" ms"); totalTime += compressionTime;
-    Serial.println();
-    Serial.print("Header Tx Time: "); Serial.print(headerTime / 1000); Serial.println(" ms"); totalTime += headerTime;
-    Serial.print("Compressed Tx Time: "); Serial.print(compressedTxTime / 1000); Serial.println(" ms"); totalTime += compressedTxTime;
-    Serial.print("Raw Tx Time: "); Serial.print(rawTxTime / 1000); Serial.println(" ms"); totalTime += rawTxTime;
-    Serial.print("Flush Tx Time: "); Serial.print(flushTime / 1000); Serial.println(" ms"); totalTime += flushTime;
-    Serial.println();
-    Serial.print("Total Time: "); Serial.print(totalTime / 1000); Serial.println(" ms");
-    Serial.println();
-    Serial.print("Bytes sent: "); Serial.println(client_buffer.totalSent); client_buffer.totalSent = 0;
-    Serial.println();
 }
