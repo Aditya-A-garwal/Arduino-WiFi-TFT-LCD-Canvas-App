@@ -2,54 +2,67 @@
 #include "constants.h"
 #include "helper.h"
 
-ColorSelector::ColorSelector(uint16_t x, uint16_t y, uint16_t hpad, uint16_t vpad, uint16_t paintRadius, MCUFRIEND_kbv *tft)
+ColorSelector::ColorSelector(unsigned x, unsigned y, MCUFRIEND_kbv *tft)
     : x {x}
     , y {y}
-    , hpad {hpad}
-    , vpad {vpad}
-    , paintRadius {paintRadius}
     , tft {tft}
+    , curColor {WHITE}
 {}
 
 
 void ColorSelector::draw() const {
 
-    for (uint16_t r = 0; r < 3; ++r) {
+    unsigned i, j;
+    uint16_t color;
 
-        for (uint16_t c = 0; c < 3; ++c) {
+    for (unsigned r = 0; r < 3; ++r) {
 
-            uint16_t i = x + (c * hpad);
-            uint16_t j = y + (r * vpad);
-            uint16_t color = colors[r][c];
+        for (unsigned c = 0; c < 3; ++c) {
 
-            tft->fillCircle(i, j, paintRadius, color);
-            tft->drawCircle(i, j, paintRadius + 2, WHITE);
+            i = x + (c * HPAD);
+            j = y + (r * VPAD);
+            color = COLORS[r][c];
+
+            tft->fillCircle(i, j, PAINT_RADIUS, color);
+            tft->drawCircle(i, j, PAINT_RADIUS + 2, WHITE);
         }
     }
 }
 
-bool ColorSelector::update(uint16_t touchX, uint16_t touchY) {
+void ColorSelector::clear() const {
+    tft->fillRect(x, y, WIDTH, HEIGHT, BLACK);
+}
+
+bool ColorSelector::update(unsigned touch_x, unsigned touch_y) {
 
     uint32_t i, j, d;
 
-    for (uint16_t r = 0; r < 3; ++r) {
+    for (unsigned r = 0; r < 3; ++r) {
 
-        for (uint16_t c = 0; c < 3; ++c) {
+        for (unsigned c = 0; c < 3; ++c) {
 
-            i = x + (c * hpad);
-            j = y + (r * vpad);
+            i = x + (c * HPAD);
+            j = y + (r * VPAD);
 
-            d = distance(i, j, touchX, touchY);
+            d = distance(i, j, touch_x, touch_y);
 
             if (d <= PAINT_RADIUS) {
 
-                curColor = colors[r][c];
+                curColor = COLORS[r][c];
                 return true;
             }
         }
     }
 
     return false;
+}
+
+unsigned ColorSelector::height() const { //todo
+    return HEIGHT;
+}
+
+unsigned ColorSelector::width() const { //todo
+    return WIDTH;
 }
 
 uint16_t ColorSelector::getColor() const {

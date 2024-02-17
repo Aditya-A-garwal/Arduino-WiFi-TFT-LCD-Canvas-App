@@ -59,8 +59,8 @@ void CanvasClient::loadCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS>
         return;
     }
 
-    uint16_t imageHeight = canvas->height() - 2;
-    uint16_t imageWidth = canvas->width() - 2;
+    uint16_t imageHeight = canvas->heightInternal();
+    uint16_t imageWidth = canvas->widthInternal();
 
     client.write("\x02", 1);
     client.write(&id, 1);
@@ -86,7 +86,7 @@ void CanvasClient::loadCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS>
         }
 
         for (uint16_t j = 0; j < imageWidth; ++j) {
-            canvas->writePixel(row + 1, j + 1, rowbuf.color[j]);
+            canvas->writePixel(row, j, rowbuf.color[j]);
         }
 
         for (uint16_t j = 0; j < imageWidth; ++j) {
@@ -125,7 +125,7 @@ void CanvasClient::saveCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS>
         }
         else {
             for (unsigned j = compressed[i].uncompress(rowbuf.code); j < imageWidth; ++j) {
-                rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
+                rowbuf.code[j] = color2code(canvas->readPixel(i, j));
             }
             compressable = compressor.compress(rowbuf.code, imageWidth);
         }

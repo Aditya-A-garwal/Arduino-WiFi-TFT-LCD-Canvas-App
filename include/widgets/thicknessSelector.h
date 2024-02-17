@@ -1,32 +1,38 @@
 #ifndef __WIDGETS_THICKNESS_SELECTOR_H__
 #define __WIDGETS_THICKNESS_SELECTOR_H__
 
-#include "Arduino.h"
-#include "Adafruit_GFX.h"
-#include "MCUFRIEND_kbv.h"
+#include "widget.h"
 
-class ThicknessSelector {
+class ThicknessSelector : Widget {
 
-    const uint16_t radii[4] = {3, 5, 7, 9};
+    static constexpr unsigned RADII[4] = {3, 5, 7, 9};
+    static constexpr unsigned PAD = 35;
+
+    static constexpr unsigned HEIGHT = 0;
+    static constexpr unsigned WIDTH = 0;
 
     MCUFRIEND_kbv *tft;
 
-    uint16_t x;
-    uint16_t y;
-
-    uint16_t pad;
+    unsigned x;
+    unsigned y;
 
     uint16_t color;
-    uint16_t curSelected;
+    unsigned curSelected;
 
 public:
 
-    ThicknessSelector(uint16_t x, uint16_t y, uint16_t pad, MCUFRIEND_kbv *tft);
+    ThicknessSelector(unsigned x, unsigned y, MCUFRIEND_kbv *tft);
 
     void    setColor(uint16_t clr);
 
-    void    draw() const;
-    bool    update(uint16_t touchX, uint16_t touchY);
+    void    draw() const override;
+    void    clear() const override;
+
+    bool    update(unsigned touch_x, unsigned touch_y) override;
+
+    unsigned height() const override;
+    unsigned width() const override;
+
     uint16_t getThickness() const;
 
 private:

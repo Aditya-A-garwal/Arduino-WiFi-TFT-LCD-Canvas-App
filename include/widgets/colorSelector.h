@@ -1,38 +1,43 @@
 #ifndef __WIDGETS_COLOR_SELECTOR_H__
 #define __WIDGETS_COLOR_SELECTOR_H__
 
-#include "Arduino.h"
-#include "Adafruit_GFX.h"
-#include "MCUFRIEND_kbv.h"
+#include "widget.h"
 
 #include "constants.h"
 
-class ColorSelector {
+class ColorSelector : Widget {
 
-    constexpr static uint16_t colors[3][3] {
+    constexpr static uint16_t COLORS[3][3] {
         {RED, GREEN, BLUE},
         {CYAN, MAGENTA, YELLOW},
         {WHITE, GRAY, BLACK}
     };
 
+    constexpr static unsigned HPAD = 35;
+    constexpr static unsigned VPAD = 35;
+    constexpr static unsigned PAINT_RADIUS = 12;
+
+    constexpr static unsigned HEIGHT = (PAINT_RADIUS/2) + (3*HPAD);
+    constexpr static unsigned WIDTH = (PAINT_RADIUS/2) + (3*VPAD);
+
     MCUFRIEND_kbv *tft;
 
-    uint16_t x;
-    uint16_t y;
+    unsigned x;
+    unsigned y;
 
-    uint16_t hpad;
-    uint16_t vpad;
-
-    uint16_t paintRadius;
-
-    uint16_t curColor = WHITE;
+    uint16_t curColor;
 
 public:
 
-    ColorSelector(uint16_t x, uint16_t y, uint16_t hpad, uint16_t vpad, uint16_t paintRadius, MCUFRIEND_kbv *tft);
+    ColorSelector(unsigned x, unsigned y, MCUFRIEND_kbv *tft);
 
-    void    draw() const;
-    bool    update(uint16_t touchX, uint16_t touchY);
+    void    draw() const override;
+    void    clear() const override;
+
+    bool    update(unsigned touch_x, unsigned touch_y) override;
+
+    unsigned height() const;
+    unsigned width() const;
 
     uint16_t getColor() const;
 

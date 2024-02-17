@@ -2,11 +2,10 @@
 #include "constants.h"
 #include "helper.h"
 
-ThicknessSelector::ThicknessSelector(uint16_t x, uint16_t y, uint16_t pad, MCUFRIEND_kbv *tft)
+ThicknessSelector::ThicknessSelector(unsigned x, unsigned y, MCUFRIEND_kbv *tft)
     : x {x}
     , y {y}
-    , pad {pad}
-    , curSelected {radii[0]}
+    , curSelected {RADII[0]}
     , tft {tft}
 {}
 
@@ -16,13 +15,13 @@ void ThicknessSelector::setColor(uint16_t clr) {
 
 void ThicknessSelector::draw() const {
 
-    uint16_t i, j, t;
+    unsigned i, j, t;
 
-    for (uint16_t c = 0; c < 4; ++c) {
+    for (unsigned c = 0; c < 4; ++c) {
 
-        i = x + (pad * c);
+        i = x + (PAD * c);
         j = y;
-        t = radii[c];
+        t = RADII[c];
 
         (color == BLACK)
         ? tft->fillCircle(i, j, t, TFT_DARKGREY)
@@ -34,17 +33,21 @@ void ThicknessSelector::draw() const {
     }
 }
 
-bool ThicknessSelector::update(uint16_t touchX, uint16_t touchY) {
+void ThicknessSelector::clear() const { //todo
 
-    uint32_t i, j, t, d;
+}
 
-    for (uint16_t c = 0; c < 4; ++c) {
+bool ThicknessSelector::update(unsigned touch_x, unsigned touch_y) {
 
-        i = x + (pad * c);
+    unsigned i, j, t, d;
+
+    for (unsigned c = 0; c < 4; ++c) {
+
+        i = x + (PAD * c);
         j = y;
-        t = radii[c];
+        t = RADII[c];
 
-        d = distance(i, j, touchX, touchY);
+        d = distance(i, j, touch_x, touch_y);
 
         // the pen is in this color if the distance between its centre
         // and the pen is less than the radius of the paint
@@ -57,6 +60,14 @@ bool ThicknessSelector::update(uint16_t touchX, uint16_t touchY) {
     }
 
     return false;
+}
+
+unsigned ThicknessSelector::height() const {
+    return HEIGHT;
+}
+
+unsigned ThicknessSelector::width() const {
+    return WIDTH;
 }
 
 uint16_t ThicknessSelector::getThickness() const {

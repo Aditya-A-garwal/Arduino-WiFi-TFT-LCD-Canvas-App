@@ -36,30 +36,31 @@ const int YEND = 950;
 
 // application constants
 
-const uint16_t LOGO_X = 80;
-const uint16_t LOGO_Y = 4;
-const uint16_t LOGO_C = WHITE;
+constexpr unsigned CANVAS_X = 4;
+constexpr unsigned CANVAS_Y = 30;
+
+constexpr unsigned CANVAS_W = 312;
+constexpr unsigned CANVAS_H = 312;
+
+constexpr unsigned CANVAS_BUFFER_W = 32;
+constexpr unsigned CANVAS_BUFFER_H = 32;
+
+constexpr unsigned CANVAS_BUFFER_MAX_SEGMENTS = 18;
+constexpr unsigned CLIENT_BUFFER_MAX_SEGMENTS = 105;
 
 
-const uint16_t CANVAS_W = 312;
-const uint16_t CANVAS_H = 312;
+constexpr unsigned COLOR_SELECTOR_X = 40;
+constexpr unsigned COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 30;
 
-const uint16_t CANVAS_X = 4;
-const uint16_t CANVAS_Y = 30;
+// const uint16_t COLOR_SELECTOR_HPAD = 35;
+// const uint16_t COLOR_SELECTOR_VPAD = 35;
 
+// const uint16_t PAINT_RADIUS = 12;
 
-const uint16_t COLOR_SELECTOR_X = 40;
-const uint16_t COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 30;
+constexpr unsigned THICKNESS_SELECTOR_X = 160;
+constexpr unsigned THICKNESS_SELECTOR_Y = COLOR_SELECTOR_Y;
 
-const uint16_t COLOR_SELECTOR_HPAD = 35;
-const uint16_t COLOR_SELECTOR_VPAD = 35;
-
-const uint16_t PAINT_RADIUS = 12;
-
-
-const uint16_t THICKNESS_SELECTOR_X = 160;
-const uint16_t THICKNESS_SELECTOR_Y = COLOR_SELECTOR_Y;
-const uint16_t THICKNESS_SELECTOR_PAD = 35;
+// const uint16_t THICKNESS_SELECTOR_PAD = 35;
 
 
 const uint16_t SAVE_X = 144;
@@ -106,10 +107,5 @@ const uint16_t SLOT_MENU_Y = COLOR_SELECTOR_Y - 8;
 const uint16_t SLOT_MENU_W = SAVE_W * 3;
 const uint16_t SLOT_MENU_H = SAVE_H * 4;
 
-constexpr unsigned CANVAS_BUFFER_W = 32;
-constexpr unsigned CANVAS_BUFFER_H = 32;
-
-constexpr unsigned CANVAS_BUFFER_MAX_SEGMENTS = 18;
-constexpr unsigned CLIENT_BUFFER_MAX_SEGMENTS = 105;
 
 #endif

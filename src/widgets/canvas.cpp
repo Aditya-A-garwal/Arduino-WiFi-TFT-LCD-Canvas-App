@@ -2,48 +2,70 @@
 #include "constants.h"
 #include "helper.h"
 
-Canvas::Canvas(uint16_t x, uint16_t y, uint16_t w, uint16_t h, MCUFRIEND_kbv *tft)
+Canvas::Canvas(unsigned x, unsigned y, unsigned w, unsigned h, MCUFRIEND_kbv *tft)
     : x {x}
     , y {y}
     , w {w}
     , h {h}
     , tft {tft}
+    , thickness {}
+    , color {}
 {}
 
 void Canvas::draw() const {
     tft->drawRect(x, y, w, h, WHITE);
 }
 
-bool Canvas::update(uint16_t touchX, uint16_t touchY, uint16_t curThickness, uint16_t curColor) {
+void Canvas::clear() const {
+    tft->fillRect(x, y, w, h, BLACK);
+}
 
-    if (inRange(touchX, x + curThickness + 2, x + w - curThickness - 2)
-        && inRange(touchY, y + curThickness + 2, y + h - curThickness - 2)) {
+bool Canvas::update(unsigned touch_x, unsigned touch_y) {
 
-            tft->fillCircle(touchX, touchY, curThickness, curColor);
+    if (inRange(touch_x, x + thickness + 2, x + w - thickness - 2)
+        && inRange(touch_y, y + thickness + 2, y + h - thickness - 2)) {
+
+            tft->fillCircle(touch_x, touch_y, thickness, color);
             return true;
     }
     return false;
 }
 
-void Canvas::clear() {
+unsigned Canvas::height() const {
+    return h;
+}
+
+unsigned Canvas::width() const {
+    return w;
+}
+
+unsigned Canvas::heightInternal() const {
+    return h - 2;
+}
+
+unsigned Canvas::widthInternal() const {
+    return w - 2;
+}
+
+void Canvas::setThickness(unsigned curThickness) {
+    thickness = curThickness;
+}
+
+void Canvas::setColor(uint16_t curColor) {
+    color = curColor;
+}
+
+void Canvas::clearDrawing() {
     tft->fillRect(x + 1, y + 1, w - 2, h - 2, BLACK);
 }
 
 
-uint16_t Canvas::readPixel(uint16_t r, uint16_t c) const {
+uint16_t Canvas::readPixel(unsigned r, unsigned c) const {
 
-    return tft->readPixel(x + c, y + r);
+    return tft->readPixel(x + c + 1, y + r + 1);
 }
 
-void Canvas::writePixel(uint16_t r, uint16_t c, uint16_t color) {
+void Canvas::writePixel(unsigned r, unsigned c, uint16_t color) {
 
-    tft->writePixel(x + c, y + r, color);
-}
-
-uint16_t Canvas::height() const {
-    return h;
-}
-
-uint16_t Canvas::width() const {
-    return w;
+    tft->writePixel(x + c + 1, y + r + 1, color);
 }

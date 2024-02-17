@@ -1,52 +1,51 @@
 #ifndef __WIDGETS_BUTTON_GRID_H__
 #define __WIDGETS_BUTTON_GRID_H__
 
-#include "Arduino.h"
-#include "Adafruit_GFX.h"
-#include "MCUFRIEND_kbv.h"
-
 #include "constants.h"
+#include "widget.h"
 
-class ButtonGrid {
+class ButtonGrid : Widget {
 
-    const char *msg = "SLOT"" ";
+    static constexpr char *msg = "SLOT"" ";
 
-    const uint16_t SLOT_CLOSE_X = 2;
-    const uint16_t SLOT_CLOSE_Y = 2;
-    const uint16_t SLOT_CLOSE_W = 13;
+    static constexpr unsigned CLOSE_X = 2;
+    static constexpr unsigned CLOSE_Y = 2;
+    static constexpr unsigned CLOSE_W = 13;
 
-    const uint16_t SLOT_MENU_C = GRAY;
+    static constexpr unsigned HPAD = 23;
+    static constexpr unsigned VPAD = 8;
 
-    const uint16_t SLOT_OPTION_X = 23;
-    const uint16_t SLOT_OPTION_Y = 8;
-
-    const uint16_t SLOT_OPTION_W = SAVE_W;
-    const uint16_t SLOT_OPTION_H = SAVE_H;
-    const uint16_t SLOT_OPTION_C = WHITE;
+    static constexpr uint16_t BUTTON_C = WHITE;
 
     MCUFRIEND_kbv *tft;
 
-    uint16_t x;
-    uint16_t y;
+    unsigned x;
+    unsigned y;
 
-    uint16_t w;
-    uint16_t h;
+    unsigned w;
+    unsigned h;
 
-    uint16_t cc;
-    uint16_t rc;
+    unsigned cc;
+    unsigned rc;
 
-    uint16_t slot;
+    unsigned button_w;
+    unsigned button_h;
+
+    unsigned slot;
 
 public:
 
-    ButtonGrid(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t c, uint16_t r, MCUFRIEND_kbv *tft);
+    ButtonGrid(unsigned x, unsigned y, unsigned w, unsigned h, unsigned cc, unsigned rc, unsigned button_w, unsigned button_h, MCUFRIEND_kbv *tft);
 
-    void    draw() const;
-    bool    update(uint16_t touchX, uint16_t touchY);
+    void    draw() const override;
+    void    clear() const override;
 
-    void    clear();
+    bool    update(unsigned touch_x, unsigned touch_y) override;
 
-    uint16_t getSlot() const;
+    unsigned height() const override;
+    unsigned width() const override;
+
+    unsigned getSlot() const;
 
 private:
 

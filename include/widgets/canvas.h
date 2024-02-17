@@ -1,34 +1,44 @@
 #ifndef __WIDGETS_CANVAS_H__
 #define __WIDGETS_CANVAS_H__
 
-#include "Arduino.h"
-#include "Adafruit_GFX.h"
-#include "MCUFRIEND_kbv.h"
+#include "widget.h"
 
-class Canvas {
+class Canvas : Widget {
 
     MCUFRIEND_kbv *tft;
 
-    uint16_t x;
-    uint16_t y;
+    unsigned x;
+    unsigned y;
 
-    uint16_t w;
-    uint16_t h;
+    unsigned w;
+    unsigned h;
+
+    unsigned thickness;
+    uint16_t color;
 
 public:
 
-    Canvas(uint16_t x, uint16_t y, uint16_t w, uint16_t h, MCUFRIEND_kbv *tft);
+    Canvas(unsigned x, unsigned y, unsigned w, unsigned h, MCUFRIEND_kbv *tft);
 
-    void    draw() const;
-    bool    update(uint16_t touchX, uint16_t touchY, uint16_t curThickness, uint16_t curColor);
+    void    draw() const override;
+    void    clear() const override;
 
-    void    clear();
+    bool    update(unsigned touch_x, unsigned touch_y) override;
 
-    uint16_t readPixel(uint16_t r, uint16_t c) const;
-    void    writePixel(uint16_t r, uint16_t c, uint16_t color);
+    unsigned height() const override;
+    unsigned width() const override;
 
-    uint16_t height() const;
-    uint16_t width() const;
+    unsigned heightInternal() const;
+    unsigned widthInternal() const;
+
+    void    setThickness(unsigned curThickness);
+    void    setColor(uint16_t curColor);
+
+    void    clearDrawing();
+
+    uint16_t readPixel(unsigned r, unsigned c) const;
+    void    writePixel(unsigned r, unsigned c, uint16_t color);
+
 
 private:
 

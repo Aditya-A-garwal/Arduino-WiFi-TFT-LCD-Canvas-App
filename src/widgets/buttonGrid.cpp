@@ -2,84 +2,93 @@
 #include "constants.h"
 #include "helper.h"
 
-ButtonGrid::ButtonGrid(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t c, uint16_t r, MCUFRIEND_kbv *tft)
+ButtonGrid::ButtonGrid(unsigned x, unsigned y, unsigned w, unsigned h, unsigned cc, unsigned rc, unsigned button_w, unsigned button_h, MCUFRIEND_kbv *tft)
     : x {x}
     , y {y}
     , w {w}
     , h {h}
-    , cc {c}
-    , rc {r}
+    , cc {cc}
+    , rc {rc}
+    , button_w {button_w}
+    , button_h {button_h}
     , tft {tft}
+    , slot {}
 {}
 
 void ButtonGrid::draw() const {
 
+    unsigned i, j;
+
     tft->fillRect(x, y, w, h, BLACK);
     tft->drawRect(x, y, w, h, GRAY);
 
-    tft->fillRoundRect(x + SLOT_CLOSE_X, y + SLOT_CLOSE_Y, SLOT_CLOSE_W, SLOT_CLOSE_W, SLOT_CLOSE_W / 2, RED);
+    tft->fillRoundRect(x + CLOSE_X, y + CLOSE_Y, CLOSE_W, CLOSE_W, CLOSE_W / 2, RED);
 
     tft->setTextColor(WHITE, BLACK);
     tft->setTextSize(2);
 
-    for (uint16_t r = 0; r < rc; ++r) {
-        for (uint16_t c = 0; c < cc; ++c) {
+    for (unsigned r = 0; r < rc; ++r) {
 
-            uint16_t i = x + SLOT_OPTION_X*(c + 1) + SLOT_OPTION_W*(c);
-            uint16_t j = y + SLOT_OPTION_Y*(r + 1) + SLOT_OPTION_H*(r);
+        for (unsigned c = 0; c < cc; ++c) {
 
-            tft->drawRect(
-                i,
-                j,
-                SLOT_OPTION_W,
-                SLOT_OPTION_H,
-                WHITE
-            );
+            j = y + VPAD + (button_h + VPAD)*r;
+            i = x + HPAD + (button_w + HPAD)*c;
+
+            tft->drawRect(i, j, button_w, button_h, WHITE);
 
             tft->setCursor(i, j);
 
             tft->print(msg);
             tft->print(1 + r + (c * rc));
+
+            // delay(2000);
         }
     }
 }
 
-bool ButtonGrid::update(uint16_t touchX, uint16_t touchY) {
+bool ButtonGrid::update(unsigned touch_x, unsigned touch_y) {
 
-    // close button pressed
-    if (inRange(touchX, x + SLOT_CLOSE_X, x + SLOT_CLOSE_X + SLOT_CLOSE_W) && inRange(touchY, y + SLOT_CLOSE_Y, y + SLOT_CLOSE_Y + SLOT_CLOSE_W)) { // close this menu
+    if (inRange(touch_x, x + CLOSE_X, x + CLOSE_X + CLOSE_W)
+        && inRange(touch_y, y + CLOSE_Y, y + CLOSE_Y + CLOSE_W)) { // close this menu
 
         slot = 0;
         return true;
     }
 
-    for (uint16_t r = 0; r < rc; ++r) {
-        for (uint16_t c = 0; c < cc; ++c) {
+    for (unsigned r = 0; r < rc; ++r) {
+        for (unsigned c = 0; c < cc; ++c) {
 
-            if (!inRange(
-                    touchX,
-                    x + SLOT_OPTION_X*(c + 1) + SLOT_OPTION_W*(c),
-                    x + SLOT_OPTION_X*(c + 1) + SLOT_OPTION_W*(c + 1)) ||
-                !inRange(
-                    touchY,
-                    y + SLOT_OPTION_Y*(r + 1) + SLOT_OPTION_H*(r),
-                    y + SLOT_OPTION_Y*(r + 1) + SLOT_OPTION_H*(r + 1))) {
-                continue;
+            if (inRange(
+                    touch_x,
+                    x + HPAD + (button_w + HPAD)*c,
+                    x + (button_w + HPAD)*(c + 1)) &&
+                inRange(
+                    touch_y,
+                    y + VPAD + (button_h + VPAD)*r,
+                    y + (button_h + VPAD)*(r + 1))) {
+
+                slot = 1 + r + (c * rc);
+                return true;
             }
-
-            slot = 1 + r + (c * rc);
-            return true;
         }
     }
 
     return false;
 }
 
-void ButtonGrid::clear() {
+void ButtonGrid::clear() const {
 
     tft->fillRect(x, y, w, h, BLACK);
 }
 
-uint16_t ButtonGrid::getSlot() const {
+unsigned ButtonGrid::height() const {
+    return h;
+}
+
+unsigned ButtonGrid::width() const {
+    return w;
+}
+
+unsigned ButtonGrid::getSlot() const {
     return slot;
 }

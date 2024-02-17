@@ -23,9 +23,9 @@
 MCUFRIEND_kbv tft;
 
 Canvas canvas(CANVAS_X, CANVAS_Y, CANVAS_W, CANVAS_H, &tft);
-ColorSelector colorSelector(COLOR_SELECTOR_X, COLOR_SELECTOR_Y, COLOR_SELECTOR_HPAD, COLOR_SELECTOR_VPAD, PAINT_RADIUS, &tft);
-ThicknessSelector thicknessSelector(THICKNESS_SELECTOR_X, THICKNESS_SELECTOR_Y, THICKNESS_SELECTOR_PAD, &tft);
-ButtonGrid slotSelector(SLOT_MENU_X, SLOT_MENU_Y, SLOT_MENU_W, SLOT_MENU_H, 2, 3, &tft);
+ColorSelector colorSelector(COLOR_SELECTOR_X, COLOR_SELECTOR_Y, &tft);
+ThicknessSelector thicknessSelector(THICKNESS_SELECTOR_X, THICKNESS_SELECTOR_Y, &tft);
+ButtonGrid slotSelector(SLOT_MENU_X, SLOT_MENU_Y, SLOT_MENU_W, SLOT_MENU_H, 2, 3, 72, 28, &tft);
 
 Button loadButton(LOAD_X, LOAD_Y, LOAD_W, LOAD_H, LOAD_C, "LOAD", &tft);
 Button saveButton(SAVE_X, SAVE_Y, SAVE_W, SAVE_H, SAVE_C, "SAVE", &tft);
@@ -36,7 +36,6 @@ CanvasClient client(&canvas);
 
 GFXcanvas1 canvasBuffer(CANVAS_BUFFER_W, CANVAS_BUFFER_H);
 
-// CompressedRow compressed[CANVAS_H - 2];
 Compressor<CANVAS_BUFFER_MAX_SEGMENTS> compressed[CANVAS_H - 2];
 uint8_t rawCode[CANVAS_W - 2] {};
 
@@ -78,7 +77,10 @@ void loop(void) {
         const uint16_t color = colorSelector.getColor();
         const uint8_t code = color2code(color);
 
-        if (canvas.update(x, y, thickness, color)) {
+        canvas.setThickness(thickness);
+        canvas.setColor(color);
+
+        if (canvas.update(x, y)) {
 
             const uint16_t canvasX = x - CANVAS_X - 1;
             const uint16_t canvasY = y - CANVAS_Y - 1;
@@ -163,7 +165,7 @@ void loop(void) {
     }
 
     if (clearButton.update(x, y)) {
-        canvas.clear();
+        canvas.clearDrawing();
         clearCompressedCanvas();
     }
 
