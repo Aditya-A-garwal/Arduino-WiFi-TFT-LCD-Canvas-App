@@ -1,52 +1,63 @@
 #include "compressedCanvas.h"
 
-bool CompressedCanvas::compress(uint8_t *codes, uint16_t count) {
+unsigned CompressedCanvas::compress(uint8_t *codes, uint16_t count) {
 
-    numSegments = 0;
+    unsigned segmentCount = 0;
 
     for (unsigned l = 0, r; l < count; l = r) {
-
         for (r = l; r <= count; ++r) {
-
             if (r == count || codes[l] != codes[r]) {
                 break;
             }
         }
 
-        if (++numSegments >= NUM_SEGMENTS) {
-            numSegments = 0;
-            return false;
+        if (++segmentCount >= NUM_SEGMENTS) { // this segment can not be added
+
+            segmentInfo.pixelCount = l;
+            segmentInfo.segmentCount = segmentCount - 1;
+
+            return l;
         }
 
-        segment *curSegment = (segment *)&segments[numSegments - 1];
+        segment_t *curSegment = (segment_t *)&segments[segmentCount - 1];
         curSegment->code = codes[l];
         curSegment->size = r - l;
     }
 
-    return true;
+    segmentInfo.pixelCount = count;
+    segmentInfo.segmentCount = segmentCount;
+
+    return count;
 }
 
-bool CompressedCanvas::uncompress(uint8_t *codes) {
+unsigned CompressedCanvas::uncompress(uint8_t *codes) const {
 
-    if (numSegments == 0) {
-        return false;
+    const unsigned segmentCount = segmentInfo.segmentCount;
+    const unsigned pixelCount = segmentInfo.pixelCount;
+
+    if (segmentCount == 0) {
+        return 0;
     }
 
-    for (unsigned s = 0, idx = 0; s < numSegments; ++s) {
+    for (unsigned s = 0, idx = 0; s < segmentCount; ++s) {
 
-        unsigned code = ((segment *)&segments[s])->code;
-        unsigned size = ((segment *)&segments[s])->size;
+        unsigned code = ((segment_t *)&segments[s])->code;
+        unsigned size = ((segment_t *)&segments[s])->size;
 
         while (size--) {
             codes[idx++] = code;
         }
     }
 
-    return true;
+    return pixelCount;
 }
 
-uint16_t CompressedCanvas::getNumSegments() {
-    return numSegments;
+uint16_t CompressedCanvas::segmentCount() const {
+    return segmentInfo.segmentCount;
+}
+
+uint16_t CompressedCanvas::pixelCount() const {
+    return segmentInfo.pixelCount;
 }
 
 uint16_t* CompressedCanvas::getSegmentArray() {

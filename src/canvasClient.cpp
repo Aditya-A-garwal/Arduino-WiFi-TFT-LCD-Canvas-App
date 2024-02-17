@@ -171,12 +171,8 @@ void CanvasClient::saveCanvas(uint8_t id, CompressedCanvas *compressed) {
     for (uint16_t i = 0; i < imageHeight; ++i) {
 
         x = micros();
-
-        // see if this row can be uncompressed right now
-        if (!compressed[i].uncompress(rowbuf.code)) {
-            for (unsigned j = 0; j < imageWidth; ++j) {
-                rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
-            }
+        for (unsigned j = compressed[i].uncompress(rowbuf.code); j < imageWidth; ++j) {
+            rowbuf.code[j] = color2code(canvas->readPixel(i + 1, j + 1));
         }
         readTime += micros() - x;
 

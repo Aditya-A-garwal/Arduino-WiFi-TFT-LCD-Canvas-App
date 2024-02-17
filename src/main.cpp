@@ -72,36 +72,43 @@ void loop(void) {
     unsigned canvasUpdateTime = 0;
     getTouchCoors(&x, &y);
 
-    // update each widget
     canvasUpdateTime = micros();
-    if (canvas.update(x, y, thicknessSelector.getThickness(), colorSelector.getColor())) {
-
-        const uint16_t cx = x - CANVAS_X - 1;
-        const uint16_t cy = y - CANVAS_Y - 1;
-
+    {
         const uint16_t thickness = thicknessSelector.getThickness();
         const uint16_t color = colorSelector.getColor();
         const uint8_t code = color2code(color);
 
-        const uint16_t row_origin = cy - thickness;
-        const uint16_t col_origin = cx - thickness;
+        if (canvas.update(x, y, thickness, color)) {
 
-        canvasBuffer.fillCircle(thickness, thickness, thickness, 1);
+            const uint16_t canvasX = x - CANVAS_X - 1;
+            const uint16_t canvasY = y - CANVAS_Y - 1;
 
-        for (unsigned i = 0; i <= thickness*2; ++i) {
+            const uint16_t row_lo = canvasY - thickness;
+            const uint16_t row_hi = canvasY + thickness;
 
-            if (!compressed[i + row_origin].uncompress(rawCode)) { //! it is possible for only a prefix to be compressed, dont ignore that case
-                continue;
-            }
+            const uint16_t col_lo = canvasX - thickness;
+            const uint16_t col_hi = canvasX + thickness;
 
-            for (unsigned j = 0; j <= thickness*2; ++j) {
+            canvasBuffer.fillRect(0, 0, CANVAS_BUFFER_W, CANVAS_BUFFER_H, 0);
+            canvasBuffer.fillCircle(thickness, thickness, thickness, 1);
 
-                if (canvasBuffer.getPixel(j, i)) {
-                    rawCode[j + col_origin] = code;
+            for (unsigned i = row_lo, col_end; i <= row_hi; ++i) {
+
+                if (compressed[i].pixelCount()-1 < col_lo) {
+                    continue;
                 }
-            }
+                compressed[i].uncompress(rawCode);
 
-            compressed[i + row_origin].compress(rawCode, CANVAS_W - 2);
+                for (unsigned j = col_lo; j <= col_hi; ++j) {
+
+                    if (canvasBuffer.getPixel(j - col_lo, i - row_lo)) {
+                        rawCode[j] = code;
+                        col_end = j;
+                    }
+                }
+
+                compressed[i].compress(rawCode, col_end);
+            }
         }
     }
     canvasUpdateTime = (micros() - canvasUpdateTime) / 1000;

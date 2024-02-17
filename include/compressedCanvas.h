@@ -15,22 +15,29 @@ class CompressedCanvas {
 
     constexpr static unsigned NUM_SEGMENTS = 18;
 
-    struct segment {
+    struct segment_t {
         uint16_t code: 4;
         uint16_t size: 9;
         uint16_t _: 3;
     };
-    static_assert(sizeof(segment) == sizeof(uint16_t));
+    static_assert(sizeof(segment_t) == sizeof(uint16_t));
+
+    struct count_info_t {
+        uint16_t segmentCount: 6;
+        uint16_t pixelCount: 10;
+    };
+    static_assert(sizeof(count_info_t) == sizeof(uint16_t));
 
     uint16_t segments[NUM_SEGMENTS];
-    uint16_t numSegments;
+    count_info_t segmentInfo;
 
 public:
 
-    bool compress(uint8_t *codes, uint16_t count);
-    bool uncompress(uint8_t *codes);
+    unsigned compress(uint8_t *codes, uint16_t count);
+    unsigned uncompress(uint8_t *codes) const;
 
-    uint16_t getNumSegments();
+    uint16_t segmentCount() const;
+    uint16_t pixelCount() const;
     uint16_t *getSegmentArray();
 
 private:
