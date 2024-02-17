@@ -13,12 +13,12 @@ class ColorSelector : Widget {
         {WHITE, GRAY, BLACK}
     };
 
-    constexpr static unsigned HPAD = 35;
-    constexpr static unsigned VPAD = 35;
+    constexpr static unsigned HPAD = 12;
+    constexpr static unsigned VPAD = 12;
     constexpr static unsigned PAINT_RADIUS = 12;
 
-    constexpr static unsigned HEIGHT = (PAINT_RADIUS/2) + (3*HPAD);
-    constexpr static unsigned WIDTH = (PAINT_RADIUS/2) + (3*VPAD);
+    constexpr static unsigned HEIGHT = (6*PAINT_RADIUS) + (4*HPAD);
+    constexpr static unsigned WIDTH = (6*PAINT_RADIUS) + (4*VPAD);
 
     MCUFRIEND_kbv *tft;
 

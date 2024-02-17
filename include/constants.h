@@ -49,18 +49,13 @@ constexpr unsigned CANVAS_BUFFER_MAX_SEGMENTS = 18;
 constexpr unsigned CLIENT_BUFFER_MAX_SEGMENTS = 105;
 
 
-constexpr unsigned COLOR_SELECTOR_X = 40;
-constexpr unsigned COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 30;
-
-// const uint16_t COLOR_SELECTOR_HPAD = 35;
-// const uint16_t COLOR_SELECTOR_VPAD = 35;
-
-// const uint16_t PAINT_RADIUS = 12;
+// constexpr unsigned COLOR_SELECTOR_X = 40;
+// constexpr unsigned COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 30;
+constexpr unsigned COLOR_SELECTOR_X = 4;
+constexpr unsigned COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 10;
 
 constexpr unsigned THICKNESS_SELECTOR_X = 160;
 constexpr unsigned THICKNESS_SELECTOR_Y = COLOR_SELECTOR_Y;
-
-// const uint16_t THICKNESS_SELECTOR_PAD = 35;
 
 
 const uint16_t SAVE_X = 144;
