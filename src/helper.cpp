@@ -51,7 +51,7 @@ uint8_t color2code(uint16_t clr) {
     }
 }
 
-bool inRange(uint16_t value, uint16_t lo, uint16_t hi) {
+bool inRange(unsigned value, unsigned lo, unsigned hi) {
     return lo <= value && value <= hi;
 }
 

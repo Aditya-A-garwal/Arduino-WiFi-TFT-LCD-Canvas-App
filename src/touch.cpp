@@ -16,7 +16,7 @@ void toDisplayMode() {
     pinMode(YP, OUTPUT);
 }
 
-void convertTouchCoors(uint16_t tx, uint16_t ty, uint16_t *xptr, uint16_t *yptr) {
+void convertTouchCoors(unsigned tx, unsigned ty, unsigned *xptr, unsigned *yptr) {
 
     tx = constrain(tx, XBEGIN, XEND);
     ty = constrain(ty, YBEGIN, YEND);
@@ -28,7 +28,7 @@ void convertTouchCoors(uint16_t tx, uint16_t ty, uint16_t *xptr, uint16_t *yptr)
     *yptr = ty;
 }
 
-void getTouchCoors(uint16_t *xptr, uint16_t *yptr) {
+void getTouchCoors(unsigned *xptr, unsigned *yptr) {
 
     TSPoint p;
 

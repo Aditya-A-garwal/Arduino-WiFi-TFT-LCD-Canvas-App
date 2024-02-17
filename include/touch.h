@@ -2,7 +2,7 @@
 #define __TOUCH_H__
 
 void toDisplayMode();
-void convertTouchCoors(uint16_t tx, uint16_t ty, uint16_t *xptr, uint16_t *yptr);
-void getTouchCoors(uint16_t *xptr, uint16_t *yptr);
+void convertTouchCoors(unsigned tx, unsigned ty, unsigned *xptr, unsigned *yptr);
+void getTouchCoors(unsigned *xptr, unsigned *yptr);
 
 #endif
