@@ -8,8 +8,8 @@ class ButtonGrid : Widget {
 
     static constexpr char *msg = "SLOT"" ";
 
-    static constexpr unsigned CLOSE_X = 2;
-    static constexpr unsigned CLOSE_Y = 2;
+    static constexpr unsigned CLOSE_X = 3;
+    static constexpr unsigned CLOSE_Y = 3;
     static constexpr unsigned CLOSE_W = 13;
 
     static constexpr unsigned HPAD = 23;

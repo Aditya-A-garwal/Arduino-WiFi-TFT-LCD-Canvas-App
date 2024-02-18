@@ -51,32 +51,32 @@ constexpr unsigned CLIENT_BUFFER_MAX_SEGMENTS = 105;
 
 // constexpr unsigned COLOR_SELECTOR_X = 40;
 // constexpr unsigned COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 30;
-constexpr unsigned COLOR_SELECTOR_X = 4;
-constexpr unsigned COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 10;
+constexpr unsigned COLOR_SELECTOR_X = 12;
+constexpr unsigned COLOR_SELECTOR_Y = CANVAS_Y + CANVAS_H + 7;
 
-constexpr unsigned THICKNESS_SELECTOR_X = 160;
-constexpr unsigned THICKNESS_SELECTOR_Y = COLOR_SELECTOR_Y;
-
-
-const uint16_t SAVE_X = 144;
-const uint16_t SAVE_Y = COLOR_SELECTOR_Y + 56;
-
-const uint16_t SAVE_W = 72;
-const uint16_t SAVE_H = 28;
-
-const uint16_t SAVE_C = GREEN;
+constexpr unsigned THICKNESS_SELECTOR_X = 145;
+constexpr unsigned THICKNESS_SELECTOR_Y = COLOR_SELECTOR_Y - 3;
 
 
-const uint16_t LOAD_X = SAVE_X;
-const uint16_t LOAD_Y = COLOR_SELECTOR_Y + 20;
+const uint16_t LOAD_X = THICKNESS_SELECTOR_X;
+const uint16_t LOAD_Y = COLOR_SELECTOR_Y + 35;
 
-const uint16_t LOAD_W = SAVE_W;
-const uint16_t LOAD_H = SAVE_H;
+const uint16_t LOAD_W = 72;
+const uint16_t LOAD_H = 24;
 
 const uint16_t LOAD_C = BLUE;
 
 
-const uint16_t CLEAR_X = LOAD_X + 80;
+const uint16_t SAVE_X = LOAD_X;
+const uint16_t SAVE_Y = LOAD_Y + 32;
+
+const uint16_t SAVE_W = LOAD_W;
+const uint16_t SAVE_H = LOAD_H;
+
+const uint16_t SAVE_C = GREEN;
+
+
+const uint16_t CLEAR_X = LOAD_X + LOAD_W + 4;
 const uint16_t CLEAR_Y = LOAD_Y;
 
 const uint16_t CLEAR_W = SAVE_W;
@@ -96,11 +96,11 @@ const uint16_t INFO_C = CYAN;
 
 const uint16_t NUM_SLOTS = 6;
 
-const uint16_t SLOT_MENU_X = COLOR_SELECTOR_X - 8;
-const uint16_t SLOT_MENU_Y = COLOR_SELECTOR_Y - 8;
+const uint16_t SLOT_MENU_X = COLOR_SELECTOR_X + 20;
+const uint16_t SLOT_MENU_Y = COLOR_SELECTOR_Y + 20;
 
 const uint16_t SLOT_MENU_W = SAVE_W * 3;
-const uint16_t SLOT_MENU_H = SAVE_H * 4;
+const uint16_t SLOT_MENU_H = (SAVE_H * 9) / 2;
 
 
 #endif
