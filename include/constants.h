@@ -37,10 +37,10 @@ const int YEND = 950;
 // application constants
 
 constexpr unsigned CANVAS_X = 4;
-constexpr unsigned CANVAS_Y = 30;
+constexpr unsigned CANVAS_Y = 10;
 
 constexpr unsigned CANVAS_W = 312;
-constexpr unsigned CANVAS_H = 312;
+constexpr unsigned CANVAS_H = 332;
 
 constexpr unsigned CANVAS_BUFFER_W = 32;
 constexpr unsigned CANVAS_BUFFER_H = 32;
