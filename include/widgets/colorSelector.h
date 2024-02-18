@@ -14,7 +14,7 @@ class ColorSelector : Widget {
     };
 
     constexpr static unsigned HPAD = 12;
-    constexpr static unsigned VPAD = 12;
+    constexpr static unsigned VPAD = 14;
     constexpr static unsigned PAINT_RADIUS = 12;
 
     constexpr static unsigned HEIGHT = (6*PAINT_RADIUS) + (4*HPAD);
