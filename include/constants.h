@@ -58,57 +58,57 @@ constexpr unsigned THICKNESS_SELECTOR_X = 145;
 constexpr unsigned THICKNESS_SELECTOR_Y = COLOR_SELECTOR_Y - 3;
 
 
-const uint16_t LOAD_X = THICKNESS_SELECTOR_X;
-const uint16_t LOAD_Y = COLOR_SELECTOR_Y + 35;
+const unsigned LOAD_X = THICKNESS_SELECTOR_X;
+const unsigned LOAD_Y = COLOR_SELECTOR_Y + 35;
 
-const uint16_t LOAD_W = 72;
-const uint16_t LOAD_H = 24;
+const unsigned LOAD_W = 72;
+const unsigned LOAD_H = 24;
 
 const uint16_t LOAD_C = BLUE;
 
 
-const uint16_t SAVE_X = LOAD_X;
-const uint16_t SAVE_Y = LOAD_Y + 32;
+const unsigned SAVE_X = LOAD_X;
+const unsigned SAVE_Y = LOAD_Y + 32;
 
-const uint16_t SAVE_W = LOAD_W;
-const uint16_t SAVE_H = LOAD_H;
+const unsigned SAVE_W = LOAD_W;
+const unsigned SAVE_H = LOAD_H;
 
 const uint16_t SAVE_C = GREEN;
 
 
-const uint16_t CLEAR_X = LOAD_X + LOAD_W + 4;
-const uint16_t CLEAR_Y = LOAD_Y;
+const unsigned CLEAR_X = LOAD_X + LOAD_W + 4;
+const unsigned CLEAR_Y = LOAD_Y;
 
-const uint16_t CLEAR_W = SAVE_W;
-const uint16_t CLEAR_H = SAVE_H;
+const unsigned CLEAR_W = SAVE_W;
+const unsigned CLEAR_H = SAVE_H;
 
 const uint16_t CLEAR_C = RED;
 
 
-const uint16_t INFO_X = CLEAR_X;
-const uint16_t INFO_Y = SAVE_Y;
+const unsigned INFO_X = CLEAR_X;
+const unsigned INFO_Y = SAVE_Y;
 
-const uint16_t INFO_W = SAVE_W;
-const uint16_t INFO_H = SAVE_H;
+const unsigned INFO_W = SAVE_W;
+const unsigned INFO_H = SAVE_H;
 
 const uint16_t INFO_C = CYAN;
 
-const uint16_t CONNECT_X = LOAD_X;
-const uint16_t CONNECT_Y = SAVE_Y + 32;
+const unsigned CONNECT_X = LOAD_X;
+const unsigned CONNECT_Y = SAVE_Y + 32;
 
-const uint16_t CONNECT_W = 4 + (SAVE_W * 2);
-const uint16_t CONNECT_H = SAVE_H;
+const unsigned CONNECT_W = 4 + (SAVE_W * 2);
+const unsigned CONNECT_H = SAVE_H;
 
 const uint16_t CONNECT_C = WHITE;
 
 
-const uint16_t NUM_SLOTS = 6;
+const unsigned NUM_SLOTS = 6;
 
-const uint16_t SLOT_MENU_X = COLOR_SELECTOR_X + 20;
-const uint16_t SLOT_MENU_Y = COLOR_SELECTOR_Y + 20;
+const unsigned SLOT_MENU_X = COLOR_SELECTOR_X + 20;
+const unsigned SLOT_MENU_Y = COLOR_SELECTOR_Y + 20;
 
-const uint16_t SLOT_MENU_W = SAVE_W * 3;
-const uint16_t SLOT_MENU_H = (SAVE_H * 9) / 2;
+const unsigned SLOT_MENU_W = SAVE_W * 3;
+const unsigned SLOT_MENU_H = (SAVE_H * 9) / 2;
 
 
 #endif
