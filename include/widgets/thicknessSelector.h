@@ -6,10 +6,10 @@
 class ThicknessSelector : Widget {
 
     static constexpr unsigned RADII[4] = {3, 5, 7, 9};
-    static constexpr unsigned PAD = 35;
+    static constexpr unsigned PAD = 17;
 
-    static constexpr unsigned HEIGHT = 0;
-    static constexpr unsigned WIDTH = 0;
+    static constexpr unsigned HEIGHT = 33;
+    static constexpr unsigned WIDTH = 8 * PAD;
 
     MCUFRIEND_kbv *tft;
 

@@ -19,8 +19,8 @@ void ThicknessSelector::draw() const {
 
     for (unsigned c = 0; c < 4; ++c) {
 
-        i = x + (PAD * c);
-        j = y;
+        i = x + (2*c + 1)*PAD;
+        j = y + HEIGHT/2;
         t = RADII[c];
 
         (color == BLACK)
@@ -33,8 +33,8 @@ void ThicknessSelector::draw() const {
     }
 }
 
-void ThicknessSelector::clear() const { //todo
-
+void ThicknessSelector::clear() const {
+    tft->fillRect(x, y, WIDTH, HEIGHT, BLACK);
 }
 
 bool ThicknessSelector::update(unsigned touch_x, unsigned touch_y) {
@@ -43,8 +43,8 @@ bool ThicknessSelector::update(unsigned touch_x, unsigned touch_y) {
 
     for (unsigned c = 0; c < 4; ++c) {
 
-        i = x + (PAD * c);
-        j = y;
+        i = x + (2*c + 1)*PAD;
+        j = y + HEIGHT/2;
         t = RADII[c];
 
         d = distance(i, j, touch_x, touch_y);
