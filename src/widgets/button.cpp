@@ -28,9 +28,9 @@ void Button::clear() const {
     tft->fillRect(x, y, w, h, BLACK);
 }
 
-bool Button::update(unsigned touchX, unsigned touchY) {
+bool Button::update(unsigned touch_x, unsigned touch_y) {
 
-    if (!inRange(touchX, x, x + w) || !inRange(touchY, y, y + h)) {
+    if (!inRange(touch_x, x, x + w) || !inRange(touch_y, y, y + h)) {
         return false;
     }
 

@@ -93,6 +93,14 @@ const uint16_t INFO_H = SAVE_H;
 
 const uint16_t INFO_C = CYAN;
 
+const uint16_t CONNECT_X = LOAD_X;
+const uint16_t CONNECT_Y = SAVE_Y + 32;
+
+const uint16_t CONNECT_W = 4 + (SAVE_W * 2);
+const uint16_t CONNECT_H = SAVE_H;
+
+const uint16_t CONNECT_C = WHITE;
+
 
 const uint16_t NUM_SLOTS = 6;
 

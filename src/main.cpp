@@ -31,6 +31,7 @@ Button loadButton(LOAD_X, LOAD_Y, LOAD_W, LOAD_H, LOAD_C, "LOAD", &tft);
 Button saveButton(SAVE_X, SAVE_Y, SAVE_W, SAVE_H, SAVE_C, "SAVE", &tft);
 Button clearButton(CLEAR_X, CLEAR_Y, CLEAR_W, CLEAR_H, CLEAR_C, "CLEAR", &tft);
 Button infoButton(INFO_X, INFO_Y, INFO_W, INFO_H, INFO_C, "INFO", &tft);
+Button connectButton(CONNECT_X, CONNECT_Y, CONNECT_W, CONNECT_H, CONNECT_C, "CONNECT", &tft);
 
 CanvasClient client(&canvas);
 
@@ -207,4 +208,5 @@ void drawLowerWidgets() {
     saveButton.draw();
     clearButton.draw();
     infoButton.draw();
+    connectButton.draw();
 }
