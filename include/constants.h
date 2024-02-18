@@ -21,7 +21,7 @@ constexpr unsigned DISPLAY_HEIGHT  = 480;
 // touch constants
 
 constexpr unsigned PRESSURE_LEFT = 10;
-constexpr unsigned PRESSURE_RIGHT = 1200;
+constexpr unsigned PRESSURE_RIGHT = 1400;
 
 const int XP = 8;
 const int XM = A2;
