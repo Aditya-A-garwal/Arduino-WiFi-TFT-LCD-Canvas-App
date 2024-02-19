@@ -129,7 +129,7 @@ void loop(void) {
 
         slotSelector.draw();
 
-        delay(500);
+        delay(300);
 
         for (;;) {
 
@@ -149,7 +149,7 @@ void loop(void) {
 
         slotSelector.draw();
 
-        delay(500);
+        delay(300);
 
         for (;;) {
 
