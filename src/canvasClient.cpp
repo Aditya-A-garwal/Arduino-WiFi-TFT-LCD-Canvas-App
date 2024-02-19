@@ -54,13 +54,13 @@ void CanvasClient::disconnect() {
 
 void CanvasClient::loadCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *compressed) {
 
+    uint16_t imageHeight = canvas->heightInternal();
+    uint16_t imageWidth = canvas->widthInternal();
+
     if (!client.connect(IPAddress(serverIP), serverPort)) {
         Serial.println("Connection Failed");
         return;
     }
-
-    uint16_t imageHeight = canvas->heightInternal();
-    uint16_t imageWidth = canvas->widthInternal();
 
     client.write("\x02", 1);
     client.write(&id, 1);
@@ -69,41 +69,58 @@ void CanvasClient::loadCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS>
 
     client.flush();
 
-    for (int row = 0; row < imageHeight; ++row) {
+    for (unsigned row = 0; row < imageHeight; ++row) {
 
-        for (int col = 0; col < imageWidth; ++col) {
+        while (!client.available());
+        uint8_t mode = client.read();
 
-            while (client.connected() && !client.available());
+        if (mode == 0) {
 
-            if (!client.connected()) {
-                Serial.print("Communication with client failed at row ");
-                Serial.println(row);
+            for (unsigned col = 0; col < imageWidth; ++col) {
 
-                return;
+                while (!client.available());
+                rowbuf.code[col] = client.read();
             }
+        }
+        else {
 
-            rowbuf.color[col] = code2color(client.read());
+            uint8_t lo, hi, code;
+            uint16_t segment, size;
+
+            compressor.clear();
+            for (unsigned s = 0, idx = 0; s < mode; ++s) {
+
+                while (!client.available());
+                lo = client.read();
+
+                while (!client.available());
+                hi = client.read();
+
+                compressor.pushSegment(((uint16_t)hi << 8) | (uint16_t)lo);
+
+                segment = ((uint16_t)hi << 8) | (uint16_t)lo;
+                code = ((segment_t *)&segment)->code;
+                size = ((segment_t *)&segment)->size;
+
+                while (size--) {
+                    rowbuf.code[idx++] = code;
+                }
+            }
         }
 
-        for (uint16_t j = 0; j < imageWidth; ++j) {
-            canvas->writePixel(row, j, rowbuf.color[j]);
+        for (unsigned j = 0; j < imageWidth; ++j) {
+            canvas->writePixel(row, j, code2color(rowbuf.code[j]));
         }
-
-        for (uint16_t j = 0; j < imageWidth; ++j) {
-            rowbuf.code[j] = color2code(rowbuf.color[j]); //! this is very risky code
-        }
-
-        compressed[row].compress(rowbuf.code, imageWidth); //! this code can be optimized
+        compressed[row].compress(rowbuf.code, imageWidth);
     }
 
-    while (client.connected()) {}
     client.stop();
 }
 
 void CanvasClient::saveCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS> *compressed) {
 
-    uint16_t imageHeight = canvas->height() - 2;
-    uint16_t imageWidth = canvas->width() - 2;
+    uint16_t imageHeight = canvas->heightInternal();
+    uint16_t imageWidth = canvas->widthInternal();
 
     if (client.connect(IPAddress(serverIP), serverPort) == 0) {
         Serial.println("Connection Failed");
@@ -118,17 +135,12 @@ void CanvasClient::saveCanvas(uint8_t id, Compressor<CANVAS_BUFFER_MAX_SEGMENTS>
 
     for (unsigned i = 0; i < imageHeight; ++i) {
 
-        bool compressable = true;
+        bool compressable;
 
-        if (compressed[i].getPrefixSize() == imageWidth) {
-            compressor.transfer(compressed);
+        for (unsigned j = compressed[i].uncompress(rowbuf.code); j < imageWidth; ++j) {
+            rowbuf.code[j] = color2code(canvas->readPixel(i, j));
         }
-        else {
-            for (unsigned j = compressed[i].uncompress(rowbuf.code); j < imageWidth; ++j) {
-                rowbuf.code[j] = color2code(canvas->readPixel(i, j));
-            }
-            compressable = compressor.compress(rowbuf.code, imageWidth);
-        }
+        compressable = compressor.compress(rowbuf.code, imageWidth);
 
         if (compressable) {
 

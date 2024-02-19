@@ -34,6 +34,10 @@ public:
     unsigned compress(uint8_t *codes, unsigned count);
     unsigned uncompress(uint8_t *codes);
 
+    bool pushSegment(uint16_t segment);
+
+    void clear();
+
     unsigned getPrefixSize() const;
     unsigned getSegmentCount() const;
 
@@ -100,6 +104,31 @@ unsigned Compressor<MAX_SEGMENTS>::uncompress(uint8_t *codes) {
 }
 
 template <unsigned MAX_SEGMENTS>
+bool Compressor<MAX_SEGMENTS>::pushSegment(uint16_t segment) {
+
+    uint8_t segmentCount = segmentInfo.segmentCount;
+    uint16_t pixelCount = segmentInfo.pixelCount;
+
+    if (segmentCount >= MAX_SEGMENTS) {
+        return false;
+    }
+
+    *(uint16_t *)&segments[segmentCount] = segment;
+
+    pixelCount += segments[segmentCount].size;
+    segmentCount += 1;
+
+    return true;
+}
+
+template <unsigned MAX_SEGMENTS>
+void Compressor<MAX_SEGMENTS>::clear() {
+
+    segmentInfo.segmentCount = 0;
+    segmentInfo.pixelCount = 0;
+}
+
+template <unsigned MAX_SEGMENTS>
 unsigned Compressor<MAX_SEGMENTS>::getPrefixSize() const {
     return segmentInfo.pixelCount;
 }
@@ -116,7 +145,11 @@ void Compressor<MAX_SEGMENTS>::transfer(Compressor<NUM_SEGMENTS_OTHER> *other) {
     segmentInfo.pixelCount = other->getPrefixSize();
     segmentInfo.segmentCount = other->getSegmentCount();
 
-    memcpy(segments, other->getRawSegmentAr(), sizeof(uint16_t) * segmentInfo.segmentCount);
+    for (unsigned s = 0; s < other->getSegmentCount(); ++s) {
+        segments[s] = other->getRawSegmentAr()[s];
+    }
+
+    // memcpy(segments, other->getRawSegmentAr(), sizeof(uint16_t) * segmentInfo.segmentCount);
 }
 
 template <unsigned MAX_SEGMENTS>
