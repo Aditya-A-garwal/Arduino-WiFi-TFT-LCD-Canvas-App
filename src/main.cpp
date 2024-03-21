@@ -1,10 +1,10 @@
 #include "Arduino.h"
 #include "WiFiS3.h"
 
-#include "touchscreen_constants.h"
 #include "touchscreen_driver.h"
+#include "touchscreen_constants.h"
 
-#include "bitmaps.h"
+#include "Adafruit_GFX.h"
 
 #include "widgets/app.h"
 #include "widgets/view.h"
@@ -17,6 +17,8 @@
 #include "widgets/label.h"
 #include "widgets/textbox.h"
 #include "widgets/bitmap.h"
+
+#include "bitmaps.h"
 
 MCUFRIEND_kbv tft;
 
@@ -109,7 +111,14 @@ Label *ip_addr_box;
 Bitmap *dumblebots_qrcode;
 Label *dumblebots_website_label;
 
+
 [[noreturn]] void err(const char msg[]);
+
+
+void init_startup_view();
+void init_main_view();
+void init_connection_view();
+void init_information_view();
 
 
 // main view
@@ -144,7 +153,62 @@ void connect_cb(unsigned *args);
 void try_connect(unsigned *args);
 bool verify_server();
 
-// information view
+
+void setup() {
+
+    Serial.begin(9600);
+
+    tft.begin(0x9486);
+
+    ts.set_dimensions(tft.width(), tft.height());
+    ts.set_pressure(PRESSURE_LEFT, PRESSURE_RIGHT);
+
+    app = App::create(&tft);
+    if (app == nullptr) {
+        err("Error while creating app");
+    }
+
+    init_startup_view();
+    init_main_view();
+    init_connection_view();
+    init_information_view();
+
+    app->make_active_view(startup_view);
+    app->draw();
+}
+
+void loop() {
+
+    bool press, release;
+    unsigned px, py, rx, ry;
+
+    ts.read_screen();
+
+    press = ts.get_press(&px, &py);
+    release = ts.get_release(&rx, &ry);
+
+    if (release) {
+        app->propagate_release(rx, ry);
+    }
+    if (press) {
+        app->propagate_press(px, py);
+    }
+
+    app
+    ->collect_dirty_widgets()
+    ->update_dirty_widgets()
+    ->execute_event_logic();
+
+    {
+        if (app->get_active_view() == main_view && ts.get_stylus_position(&px, &py)) {
+            canvas->draw_at(px, py);
+        }
+    }
+
+    delay(1);
+}
+
+/* ----- Start of Init functions ----- */
 
 void init_startup_view() {
 
@@ -748,65 +812,7 @@ void init_information_view() {
     information_form_window->send_back(dumblebots_qrcode, 100);
 }
 
-void setup() {
-
-    Serial.begin(9600);
-
-    tft.begin(0x9486);
-
-    ts.set_dimensions(tft.width(), tft.height());
-    ts.set_pressure(PRESSURE_LEFT, PRESSURE_RIGHT);
-
-    app = App::create(&tft);
-    if (app == nullptr) {
-        err("Error while creating app");
-    }
-
-    init_startup_view();
-    init_main_view();
-    init_connection_view();
-    init_information_view();
-
-    app->make_active_view(startup_view);
-    app->draw();
-}
-
-void loop() {
-
-    bool press, release;
-    unsigned px, py, rx, ry;
-
-    ts.read_screen();
-
-    press = ts.get_press(&px, &py);
-    release = ts.get_release(&rx, &ry);
-
-    if (release) {
-        app->propagate_release(rx, ry);
-    }
-    if (press) {
-        app->propagate_press(px, py);
-    }
-
-    app
-    ->collect_dirty_widgets()
-    ->update_dirty_widgets()
-    ->execute_event_logic();
-
-    {
-        if (app->get_active_view() == main_view && ts.get_stylus_position(&px, &py)) {
-            canvas->draw_at(px, py);
-        }
-    }
-
-    delay(1);
-}
-
-[[noreturn]]
-void err(const char msg[]) {
-    Serial.println(msg);
-    for (;;);
-}
+/* ----- Start of Callback functions ----- */
 
 void switch_to_startup(unsigned *args) {
     connection_back_button->set_onrelease(switch_to_startup);
@@ -1178,4 +1184,12 @@ void try_connect(unsigned *args) {
     ->set_message("FAILED TO CONNECT")
     ->get_style()
     ->set_fg_color(RED);
+}
+
+/* ----- ----- */
+
+[[noreturn]]
+void err(const char msg[]) {
+    Serial.println(msg);
+    for (;;);
 }
