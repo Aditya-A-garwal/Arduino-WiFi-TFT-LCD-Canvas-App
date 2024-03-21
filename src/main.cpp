@@ -1,14 +1,10 @@
 #include "Arduino.h"
-
 #include "WiFiS3.h"
 
-#include "Adafruit_GFX.h"
-#include "MCUFRIEND_kbv.h"
-
-#include "constants.h"
-#include "bitmaps.h"
-
+#include "touchscreen_constants.h"
 #include "touchscreen_driver.h"
+
+#include "bitmaps.h"
 
 #include "widgets/app.h"
 #include "widgets/view.h"
@@ -754,20 +750,7 @@ void init_information_view() {
 
 void setup() {
 
-    // HeapStats_t stats;
-
     Serial.begin(9600);
-
-    // Serial.println("-----");
-    // vPortGetHeapStats(&stats);
-    // Serial.print("Available Heap Space:         "); Serial.println(stats.xAvailableHeapSpaceInBytes);
-    // Serial.print("Minimum Ever Free Bytes:      "); Serial.println(stats.xMinimumEverFreeBytesRemaining);
-    // Serial.print("Number of Free blocks:        "); Serial.println(stats.xNumberOfFreeBlocks);
-    // Serial.print("Number of successful allocs:  "); Serial.println(stats.xNumberOfSuccessfulAllocations);
-    // Serial.print("Number of successful frees:   "); Serial.println(stats.xNumberOfSuccessfulFrees);
-    // Serial.print("Size of largest free block:   "); Serial.println(stats.xSizeOfLargestFreeBlockInBytes);
-    // Serial.print("Size of smallest free block:  "); Serial.println(stats.xSizeOfSmallestFreeBlockInBytes);
-    // Serial.println("-----");
 
     tft.begin(0x9486);
 
@@ -786,17 +769,6 @@ void setup() {
 
     app->make_active_view(startup_view);
     app->draw();
-
-    // Serial.println("-----");
-    // vPortGetHeapStats(&stats);
-    // Serial.print("Available Heap Space:         "); Serial.println(stats.xAvailableHeapSpaceInBytes);
-    // Serial.print("Minimum Ever Free Bytes:      "); Serial.println(stats.xMinimumEverFreeBytesRemaining);
-    // Serial.print("Number of Free blocks:        "); Serial.println(stats.xNumberOfFreeBlocks);
-    // Serial.print("Number of successful allocs:  "); Serial.println(stats.xNumberOfSuccessfulAllocations);
-    // Serial.print("Number of successful frees:   "); Serial.println(stats.xNumberOfSuccessfulFrees);
-    // Serial.print("Size of largest free block:   "); Serial.println(stats.xSizeOfLargestFreeBlockInBytes);
-    // Serial.print("Size of smallest free block:  "); Serial.println(stats.xSizeOfSmallestFreeBlockInBytes);
-    // Serial.println("-----");
 }
 
 void loop() {
@@ -832,7 +804,6 @@ void loop() {
 
 [[noreturn]]
 void err(const char msg[]) {
-
     Serial.println(msg);
     for (;;);
 }
@@ -1088,11 +1059,11 @@ void connect_cb(unsigned *args) {
 bool verify_server() {
 
     char addr[15 + 1 + 5 + 1];
-    unsigned addr_len;
+    unsigned addr_len {0};
 
-    char *ip;
-    char *port;
-    char *delim;
+    char *ip {nullptr};
+    char *port {nullptr};
+    char *delim {nullptr};
 
     unsigned server_port;
 
@@ -1110,6 +1081,7 @@ bool verify_server() {
         return false;
     }
 
+
     ip = addr;
     port = delim + 1;
     *delim = NULL;
@@ -1125,10 +1097,10 @@ bool verify_server() {
         server_port = temp;
     }
     {
-        char *saveptr;
-        unsigned num_dots;
-        unsigned len;
-        signed temp;
+        char *saveptr {nullptr};
+        unsigned num_dots {0};
+        unsigned len {0};
+        signed temp {0};
 
         for (char *ptr = ip; *ptr != NULL; ++ptr) {
             if (*ptr == '.') {
@@ -1136,9 +1108,11 @@ bool verify_server() {
             }
         }
 
+
         if (num_dots != 3) {
             return false;
         }
+
 
         for (char *ptr = strtok_r(ip, ".", &saveptr); ptr != nullptr; ptr = strtok_r(NULL, ".", &saveptr)) {
 
@@ -1163,6 +1137,7 @@ bool verify_server() {
                 }
             }
         }
+
     }
 
     canvas->set_server_addr(ip, server_port);
@@ -1170,6 +1145,8 @@ bool verify_server() {
 }
 
 void try_connect(unsigned *args) {
+
+    constexpr static unsigned MAX_WIFI_RETRY = 2;
 
     char ssid[17];
     char pass[17];

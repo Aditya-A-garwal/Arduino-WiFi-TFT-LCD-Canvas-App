@@ -63,19 +63,4 @@ constexpr uint8_t color_2_code(uint16_t color) {
     }
 }
 
-
-// touch constants
-
-constexpr unsigned PRESSURE_LEFT = 10;
-constexpr unsigned PRESSURE_RIGHT = 1400;
-
-constexpr int XP = 8;
-constexpr int XM = A2;
-constexpr int YP = A3;
-constexpr int YM = 9;
-
-// application constants
-
-constexpr unsigned MAX_WIFI_RETRY = 2;
-
 #endif

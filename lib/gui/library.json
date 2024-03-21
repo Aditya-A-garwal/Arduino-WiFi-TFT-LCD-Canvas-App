@@ -1,0 +1,9 @@
+{
+    "dependencies": {
+        "adafruit/Adafruit GFX Library": "^1.11.9",
+        "MCUFRIEND_kbv": "https://github.com/slviajero/MCUFRIEND_kbv.git"
+    },
+    "build": {
+        "libarchive": false
+    }
+}

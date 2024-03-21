@@ -144,7 +144,7 @@ public:
 
     constexpr static uint16_t DRAWABLE_W = WIDTH - 2;
     constexpr static uint16_t DRAWABLE_H = HEIGHT - 2;
-    constexpr static unsigned MAX_INLINE_COMPRESSED_SEGMENTS = 7;
+    constexpr static unsigned MAX_INLINE_COMPRESSED_SEGMENTS = 9;
 
 protected:
 
