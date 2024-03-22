@@ -161,7 +161,7 @@ void setup() {
     tft.begin(0x9486);
 
     ts.set_dimensions(tft.width(), tft.height());
-    ts.set_pressure(PRESSURE_LEFT, PRESSURE_RIGHT);
+    ts.set_pressure_bounds(PRESSURE_LO, PRESSURE_RIGHT);
 
     app = App::create(&tft);
     if (app == nullptr) {
