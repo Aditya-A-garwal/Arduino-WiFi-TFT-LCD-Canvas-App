@@ -1,6 +1,8 @@
 #include "Arduino.h"
 #include "WiFiS3.h"
 
+#include "arduino_secrets.h"
+
 #include "touchscreen_driver.h"
 #include "touchscreen_constants.h"
 
@@ -618,6 +620,9 @@ void init_connection_view() {
     ->set_event_queue(app->get_event_queue())
     ->set_onrelease(open_keyboard)
     ->set_args((unsigned *)ssid_box)
+#ifdef DEFAULT_SECRET_SSID
+    ->set_message(DEFAULT_SECRET_SSID)
+#endif
     ->get_style()
     ->set_text_size(2)
     ->set_horizontal_alignment(LabelStyle::HorizontalAlignment::LEFT_ALIGN)
@@ -627,6 +632,9 @@ void init_connection_view() {
 
     pass_label
     ->set_message("WiFi Password:")
+#ifdef DEFAULT_SERVER_ADDR
+    ->set_message(DEFAULT_SERVER_ADDR)
+#endif
     ->get_style()
     ->set_text_size(2)
     ->set_horizontal_alignment(LabelStyle::HorizontalAlignment::LEFT_ALIGN)
@@ -637,6 +645,9 @@ void init_connection_view() {
     ->set_event_queue(app->get_event_queue())
     ->set_onrelease(open_keyboard)
     ->set_args((unsigned *)pass_box)
+#ifdef DEFAULT_SECRET_PASS
+    ->set_message(DEFAULT_SECRET_PASS)
+#endif
     ->get_style()
     ->set_text_size(2)
     ->set_horizontal_alignment(LabelStyle::HorizontalAlignment::LEFT_ALIGN)
