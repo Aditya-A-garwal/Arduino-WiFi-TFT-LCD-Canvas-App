@@ -1,3 +1,10 @@
+/**
+ * @file                    window.h
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file declares the `Window` and 'WindowStyle' class, which provide a minimal and implementation of `Frame`
+ *
+ */
+
 #ifndef __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_WINDOW_H__
 #define __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_WINDOW_H__
 
@@ -7,6 +14,10 @@
 #include "vector"
 #include "algorithm"
 
+/**
+ * @brief                   Class to encapsulate style information of a window
+ *
+ */
 class WindowStyle {
 
 protected:
@@ -19,22 +30,34 @@ protected:
 
 public:
 
+    /** Color of window background */
     uint16_t bg_color {DEFAULT_BG_COLOR};
+    /** Color of window border */
     uint16_t border_color {DEFAULT_BORDER_COLOR};
 
+    /** Thickness of border */
     unsigned border_w {DEFAULT_BORDER_WIDTH};
+    /** Radius of border (0 means not rounded( */
     unsigned border_radius {DEFAULT_BORDER_RADIUS};
 
+    /** Sets the background color */
     WindowStyle *set_bg_color(uint16_t new_color);
+    /** Gets the background color */
     uint16_t get_bg_color() const;
 
+    /** Sets the border color */
     WindowStyle *set_border_color(uint16_t new_color);
+    /** Gets the border color */
     uint16_t get_border_color() const;
 
+    /** Sets the border thickness */
     WindowStyle *set_border_width(unsigned new_border_width);
+    /** Gets the border thickness */
     unsigned get_border_width() const;
 
+    /** Sets the border radius */
     WindowStyle *set_border_radius(unsigned new_border_radius);
+    /** Gets the border radius */
     unsigned get_border_radius() const;
 };
 
@@ -42,32 +65,69 @@ class Window : public Frame {
 
 protected:
 
+    /** Reference to parent frame */
     Frame *parent {nullptr};
 
+    /** Flag that indicates if the window is dirty or not */
     bool dirty {false};
+    /** Flag that indicates if the window's visibility has been changed or not */
     bool visibility_changed {false};
-
+    /** Flag to indicate if the window is hidden or visible */
     bool visible {true};
 
+    /** X-coordinate of the window relative to its parent (offset from left-edge) */
     unsigned widget_x {0};
+    /** Y-coordinate of the window relative to its parent (offset from top-edge) */
     unsigned widget_y {0};
 
+    /** X-coordinate of the window relative to the display (offset from left-edge) */
     unsigned widget_absolute_x {0};
+    /** Y-coordinate of the window relative to the display (offset from top-edge) */
     unsigned widget_absolute_y {0};
 
+    /** Width of window (number of columns occupied) */
     unsigned widget_w {0};
+    /** Height of window (number of rows occupied) */
     unsigned widget_h {0};
 
+    /** List of children of the window */
     std::vector<BasicWidget *> children;
 
+    /** Style information about the window */
     WindowStyle style;
 
 public:
 
+    /**
+     * @brief               Default constructor disabled (use the `create` method)\
+     *
+     */
     Window() = delete;
 
+    /**
+     * @brief               Dynamically create a new window instance
+     *
+     * @warning             This method returns a nullptr if a window instance could not be created
+     *
+     * @param parent        The frame that should own this window
+     * @param x             X-coordinate of the window, within `parent` (offset from left-edge)
+     * @param y             Y-coordinate of the window, within `parent` (offset from top-edge)
+     * @param width         Number of columns occupied by the window
+     * @param height        Number of rows occupied by the window
+     *
+     * @return              A pointer to the window instance (nullptr if the creation failed)
+     *
+     */
     static Window *create(Frame *parent, unsigned x, unsigned y, unsigned width, unsigned height);
 
+    /**
+     * @brief               Get the style information of the window
+     *
+     * @see                 `WindowStyle`
+     *
+     * @return              A pointer to the style object of the window
+     *
+     */
     WindowStyle *get_style();
 
     // BasicWidget overrides
@@ -134,12 +194,21 @@ public:
 
     void collect_dirty_widgets(RingQueueInterface<BasicWidget *> *dirty_widgets) override;
     void collect_overlapped_widgets(BasicWidget *dirty, BasicWidget *child, RingQueueInterface<BasicWidget *> *overlapping_widgets) override;
-    // void collect_intersecting_widgets(BasicWidget *dirty, BasicWidget *child, RingQueueInterface<BasicWidget *> *overlapping_widgets) override;
     void collect_underlapped_widgets(BasicWidget *child, RingQueueInterface<BasicWidget *> *overlapping_widgets) override;
 
 
 protected:
 
+    /**
+     * @brief               Construct a new Window object
+     *
+     * @param parent        The frame that should own this window
+     * @param x             X-coordinate of the window, within `parent` (offset from left-edge)
+     * @param y             Y-coordinate of the window, within `parent` (offset from top-edge)
+     * @param width         Number of columns occupied by the window
+     * @param height        Number of rows occupied by the window
+     *
+     */
     Window(Frame *parent, unsigned x, unsigned y, unsigned width, unsigned height);
 };
 

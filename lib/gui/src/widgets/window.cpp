@@ -1,3 +1,10 @@
+/**
+ * @file                    window.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implemented the methods of the `Window` class
+ *
+ */
+
 #include "widgets/window.h"
 
 Window::Window(Frame *parent, unsigned x, unsigned y, unsigned width, unsigned height)
