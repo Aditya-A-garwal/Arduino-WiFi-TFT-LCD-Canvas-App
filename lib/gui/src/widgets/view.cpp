@@ -1,3 +1,10 @@
+/**
+ * @file                    view.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implemented the methods of the `View` class
+ *
+ */
+
 #include "algorithm"
 #include "widgets/view.h"
 
