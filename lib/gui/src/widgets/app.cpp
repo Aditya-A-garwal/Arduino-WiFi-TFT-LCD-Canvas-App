@@ -1,3 +1,10 @@
+/**
+ * @file                    app.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implemented the methods of the `App` class
+ *
+ */
+
 #include "algorithm"
 
 #include "widgets/app.h"
