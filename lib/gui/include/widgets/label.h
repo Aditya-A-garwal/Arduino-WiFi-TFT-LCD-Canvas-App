@@ -1,7 +1,7 @@
 /**
  * @file                    label.h
  * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
- * @brief                   File that declares the `Label` class, which is a simple and flexible implementation of a box to display readonly text
+ * @brief                   File that declares the `Label` class, which is a simple and flexible implementation of a box to display text
  *
  */
 
@@ -108,7 +108,7 @@ public:
 };
 
 /**
- * @brief                   Class that provides a simple and flexible implementation of a box to display readonly text, includes styling
+ * @brief                   Class that provides a simple and flexible implementation of a box to display text, includes styling
  *
  */
 class Label : public BasicWidget {

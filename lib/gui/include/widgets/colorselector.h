@@ -15,7 +15,7 @@ class ColorSelector : public BasicWidget, public InteractiveWidget {
 
 protected:
 
-    /** The cooldown period between two pressed (used to prevent "bouncing", where a single press is detected as multiple) */
+    /** The cooldown period between two presses (used to prevent "bouncing", where a single press is detected as multiple) */
     constexpr static unsigned DEBOUNCE_THRESH = 200;
 
     constexpr static unsigned PAINT_RADIUS = 12;
