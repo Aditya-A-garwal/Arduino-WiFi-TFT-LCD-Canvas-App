@@ -33,13 +33,15 @@ Button *Button::create(Frame *parent, unsigned x, unsigned y) {
     return button;
 }
 
-Button *Button::set_message(const char *messagePtr) {
+Button *Button::set_message(const char *msg_ptr) {
     dirty = true;
-    message = messagePtr;
+    message = msg_ptr;
     return this;
 }
 
 String Button::get_message() const { return message; }
+
+unsigned Button::get_message_len() const { return message.length(); }
 
 ButtonStyle *Button::get_style() {
     dirty = true;

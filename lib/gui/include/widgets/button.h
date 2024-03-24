@@ -204,7 +204,7 @@ public:
     /**
      * @brief               Dynamically create a new button instance
      *
-     * @warning             This method returns a nullptr if the button instance could not be created
+     * @warning             This method returns a nullptr if a button instance could not be created
      *
      * @param parent        The frame that should own this button
      * @param x             X-coordinate of the button, within `parent` (offset from left-edge)
@@ -218,7 +218,7 @@ public:
     /**
      * @brief               Dynamically create a new button instance
      *
-     * @warning             This method returns a nullptr if the button instance could not be created
+     * @warning             This method returns a nullptr if a button instance could not be created
      *
      * @param parent        The frame that should own this button
      * @param x             X-coordinate of the button, within `parent` (offset from left-edge)
@@ -234,20 +234,27 @@ public:
     /**
      * @brief               Set the text that the button should display
      *
-     * @param messagePtr    Pointer to message string
+     * @param msg_ptr       Pointer to message string
      *
      * @return              Pointer to the button (allows chaining method calls)
      *
      */
-    Button *set_message(const char *messagePtr);
+    Button *set_message(const char *msg_ptr);
 
     /**
      * @brief               Get the text that the button is displaying
      *
-     * @return              An owned copy of the text that the button is displaying
+     * @return              An owned copy of the text
      *
      */
     String get_message() const;
+
+    /**
+     * @brief               Get the number of characters in the text
+     *
+     * @return              Number of characters in the text shown by the button
+     */
+    unsigned get_message_len() const;
 
     /**
      * @brief               Get a reference to the style object of the button to change its appearance
