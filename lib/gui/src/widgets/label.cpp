@@ -1,3 +1,10 @@
+/**
+ * @file                    label.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implements the methods of the `Label` class
+ *
+ */
+
 #include "widgets/label.h"
 
 Label::Label(Frame *parent, unsigned x, unsigned y, unsigned width, unsigned height)
@@ -27,13 +34,9 @@ Label *Label::set_message(const char msg_ptr[]) {
     return this;
 }
 
-String Label::get_message() const {
-    return message;
-}
+String Label::get_message() const { return message; }
 
-unsigned Label::get_message_len() const {
-    return message.length();
-}
+unsigned Label::get_message_len() const { return message.length(); }
 
 Label *Label::append_to_message(char ch) {
     dirty = true;
