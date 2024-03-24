@@ -237,7 +237,7 @@ public:
      * @param y             Y-coordiante of the pixel (offset from top-edge)
      * @param color         16-bit color of the pixel
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *set_at(unsigned x, unsigned y, uint16_t color) override;
@@ -263,7 +263,7 @@ public:
      * @param y1            Y-coordinate of the second point (offset from top-edge)
      * @param color         16-bit color of the line
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *draw_line(unsigned x0, unsigned y0, unsigned x1, unsigned y1, uint16_t color) override;
@@ -277,7 +277,7 @@ public:
      * @param h             Height of the rectangle
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *draw_rect(unsigned x, unsigned y, unsigned w, unsigned h, uint16_t color) override;
@@ -291,7 +291,7 @@ public:
      * @param h             Height of the rectangle
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *fill_rect(unsigned x, unsigned y, unsigned w, unsigned h, uint16_t color) override;
@@ -306,7 +306,7 @@ public:
      * @param r             Radius of the rounded-corners
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *draw_round_rect(unsigned x, unsigned y, unsigned w, unsigned h, unsigned r, uint16_t color) override;
@@ -320,7 +320,7 @@ public:
      * @param r             Radius of the rounded-corners
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *fill_round_rect(unsigned x, unsigned y, unsigned w, unsigned h, unsigned r, uint16_t color) override;
@@ -333,7 +333,7 @@ public:
      * @param r             Radius of the circle
      * @param color         16-bit color of the circle
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      */
     View *draw_circle(unsigned x, unsigned y, unsigned r, uint16_t color) override;
 
@@ -345,7 +345,7 @@ public:
      * @param r             Radius of the circle
      * @param color         16-bit color of the circle
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *fill_circle(unsigned x, unsigned y, unsigned r, uint16_t color) override;
@@ -362,7 +362,7 @@ public:
      * @param w             Reference to variable where the width of the textbox will be stored
      * @param h             Reference to variable where the height of the textbox will be stored
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *get_text_bounds(const char *text, unsigned text_size, unsigned x, unsigned y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) override;
@@ -372,7 +372,7 @@ public:
      *
      * @param f             Pointer to font which should be used henceforth
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *set_font(const GFXfont *f) override;
@@ -386,7 +386,7 @@ public:
      * @param text_size     Size of the text
      * @param fg_color      Color of the text
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *print(const char *text, unsigned x, unsigned y, unsigned text_size, uint16_t fg_color) override;
@@ -403,7 +403,7 @@ public:
      * @param fg_color      Color of the text
      * @param bg_color      Color of the background
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      *
      */
     View *print_opaque(const char *text, unsigned x, unsigned y, unsigned text_size, uint16_t fg_color, uint16_t bg_color) override;
@@ -417,7 +417,7 @@ public:
      * @param width         Number of columns in the bitmap
      * @param height        Number of rows in the bitmap
      *
-     * @return              Pointer to the view (allows for chaining method calls)
+     * @return              Pointer to the view (allows chaining method calls)
      */
     View *draw_rgb_bitmap(unsigned x, unsigned y, const uint16_t *data, unsigned width, unsigned height) override;
 

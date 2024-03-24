@@ -20,7 +20,7 @@ class Bitmap : public BasicWidget, public InteractiveWidget {
 protected:
 
     /** The cooldown period between two pressed (used to prevent "bouncing", where a single press is detected as multiple) */
-    constexpr static unsigned DEBOUNCE_THRESH = 150;
+    constexpr static unsigned DEBOUNCE_THRESH = 200;
 
     /** Reference to parent frame */
     Frame *parent {nullptr};
@@ -51,9 +51,6 @@ protected:
     /** Height of widget (number of rows occupied) */
     unsigned widget_h;
 
-    /** The epoch when the widget was last pressed */
-    unsigned last_press_epoch {0};
-
     /** Pointer to the bitmap array */
     const uint16_t *data;
 
@@ -67,6 +64,9 @@ protected:
 
     /** Reference to event queue for posting events */
     RingQueueInterface<callback_event_t> *event_queue {nullptr};
+
+    /** The epoch when the widget was last pressed */
+    unsigned last_press_epoch {0};
 
 public:
 

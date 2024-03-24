@@ -49,7 +49,7 @@ public:
 
 
     /**
-     * @brief               Send the widget to a lower Z-index (higher up)
+     * @brief               Send a widget to a lower Z-index (higher up)
      *
      * @warning             If `child` is not a child of this widget, then this function does nothing
      * @see                 Frame::send_back(BasicWidget*,unsigned)
@@ -63,7 +63,7 @@ public:
     virtual Frame *send_front(BasicWidget *child, unsigned amt) = 0;
 
     /**
-     * @brief               Send the widget to a higher Z-index (lower down)
+     * @brief               Send a widget to a higher Z-index (lower down)
      *
      * @warning             If `child` is not a child of this widget, then this function does nothing
      * @see                 Frame::send_front(BasicWidget*,unsigned)

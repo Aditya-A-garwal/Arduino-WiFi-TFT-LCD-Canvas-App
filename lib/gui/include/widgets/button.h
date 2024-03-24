@@ -1,7 +1,7 @@
 /**
- * @file                    bitmap.h
+ * @file                    button.h
  * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
- * @brief                   File that declares the `Bitmap` class, which is used to show 16-bit color bitmap images
+ * @brief                   File that declares the `Button` class, which is a simple and flexible implementation of a button
  *
  */
 
@@ -135,6 +135,7 @@ class Button : public BasicWidget, public InteractiveWidget {
 
 protected:
 
+    /** The cooldown period between two pressed (used to prevent "bouncing", where a single press is detected as multiple) */
     constexpr static unsigned DEBOUNCE_THRESH = 200;
 
     constexpr static unsigned DEFAULT_WIDTH = 64;

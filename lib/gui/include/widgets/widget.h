@@ -176,9 +176,9 @@ class BasicWidget {
 public:
 
     /**
-     * @brief               Get the parent of this widget
+     * @brief               Get a reference to the parent of this widget
      *
-     * @return BasicWidget* Reference to the parent of this widget\
+     * @return              Reference to the parent of this widget
      *
      */
     virtual BasicWidget *get_parent() = 0;
@@ -248,7 +248,8 @@ public:
      *
      * @note                See also `BasicWidget::get_dirty`
      *
-     * @return              If the widget's visibility was changed
+     * @return false        If the widget's visibility was not changed
+     * @return true         If the widget's visibility was changed
      *
      */
     virtual bool get_visibility_changed() const = 0;
@@ -290,19 +291,6 @@ public:
      *
      */
     virtual bool get_intersection(unsigned x, unsigned y) const = 0;
-
-    /**
-     * @brief               Check whether another widget intersects with this widget's bounding box
-     *
-     * @note                The coordinates of the point must be relative to its parent, not necessarily the screen
-     *
-     * @param x             X-coordinate of point (offset from parent's left-edge)
-     * @param y             Y-coordiante of point (offset from parents' top-edge)
-     *
-     * @return false        If the point intersects with the widget's bounding box
-     * @return true         If the point does not intersect with the widget's bounding box
-     *
-     */
 
     /**
      * @brief               Check whether another widget's bounding box intersects with this widget's bounding box
@@ -397,7 +385,7 @@ public:
      *
      * @param cb            Reference to the callback function
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual InteractiveWidget *set_onpress(callback_t new_onpress) = 0;
@@ -405,7 +393,7 @@ public:
     /**
      * @brief               Reset the callback to be called when the widget is pressed
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual InteractiveWidget *reset_onpress() = 0;
@@ -415,7 +403,7 @@ public:
      *
      * @param cb            Reference to the callback function
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual InteractiveWidget *set_onrelease(callback_t new_onrelease) = 0;
@@ -423,7 +411,7 @@ public:
     /**
      * @brief               Reset the callback to be called when the widget is released
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual InteractiveWidget *reset_onrelease() = 0;
@@ -433,14 +421,14 @@ public:
      *
      * @param new_event_queue   Mutable reference to queue which should be used
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      */
     virtual InteractiveWidget *set_event_queue(RingQueueInterface<callback_event_t> *new_event_queue) = 0;
 
     /**
      * @brief               Reset the event queue so that the widget may not enqueue any events
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual InteractiveWidget *reset_event_queue() = 0;
@@ -450,7 +438,7 @@ public:
      *
      * @param new_args      Reference to the new arguments
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual InteractiveWidget *set_args(unsigned *new_args) = 0;
@@ -460,7 +448,7 @@ public:
      *
      * @warning             This method does not explicitly perform any garbage collection for the old arguments
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
     */
     virtual InteractiveWidget *reset_args() = 0;
@@ -487,7 +475,7 @@ public:
      *
      * @param new_state     Whether the widget should ignore press and release events (or not)
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual InteractiveWidget *set_interactable(bool new_state) = 0;
@@ -520,7 +508,7 @@ public:
      * @param y             Y-coordiante of the pixel (offset from top-edge)
      * @param color         16-bit color of the pixel
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *set_at(unsigned x, unsigned y, uint16_t color) = 0;
@@ -539,14 +527,14 @@ public:
     /**
      * @brief               Draw a line between two points
      *
-
+     *
      * @param x0            X-coordinate of the first point (offset from left-edge)
      * @param y0            Y-coordinate of the first point (offset from top-edge)
      * @param x1            X-coordinate of the second point (offset from left-edge)
      * @param y1            Y-coordinate of the second point (offset from top-edge)
      * @param color         16-bit color of the line
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *draw_line(unsigned x0, unsigned y0, unsigned x1, unsigned y1, uint16_t color) = 0;
@@ -560,7 +548,7 @@ public:
      * @param h             Height of the rectangle
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *draw_rect(unsigned x, unsigned y, unsigned w, unsigned h, uint16_t color) = 0;
@@ -574,7 +562,7 @@ public:
      * @param h             Height of the rectangle
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *fill_rect(unsigned x, unsigned y, unsigned w, unsigned h, uint16_t color) = 0;
@@ -589,7 +577,7 @@ public:
      * @param r             Radius of the rounded-corners
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *draw_round_rect(unsigned x, unsigned y, unsigned w, unsigned h, unsigned r, uint16_t color) = 0;
@@ -603,7 +591,7 @@ public:
      * @param r             Radius of the rounded-corners
      * @param color         16-bit color of the rectangle
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *fill_round_rect(unsigned x, unsigned y, unsigned w, unsigned h, unsigned r, uint16_t color) = 0;
@@ -616,7 +604,7 @@ public:
      * @param r             Radius of the circle
      * @param color         16-bit color of the circle
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      */
     virtual DrawableWidget *draw_circle(unsigned x, unsigned y, unsigned r, uint16_t color) = 0;
 
@@ -628,7 +616,7 @@ public:
      * @param r             Radius of the circle
      * @param color         16-bit color of the circle
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *fill_circle(unsigned x, unsigned y, unsigned r, uint16_t color) = 0;
@@ -645,7 +633,7 @@ public:
      * @param w             Reference to variable where the width of the textbox will be stored
      * @param h             Reference to variable where the height of the textbox will be stored
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *get_text_bounds(const char *text, unsigned text_size, unsigned x, unsigned y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) = 0;
@@ -655,7 +643,7 @@ public:
      *
      * @param f             Pointer to font which should be used henceforth
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *set_font(const GFXfont *f) = 0;
@@ -669,7 +657,7 @@ public:
      * @param text_size     Size of the text
      * @param fg_color      Color of the text
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *print(const char *text, unsigned x, unsigned y, unsigned text_size, uint16_t fg_color) = 0;
@@ -686,7 +674,7 @@ public:
      * @param fg_color      Color of the text
      * @param bg_color      Color of the background
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      *
      */
     virtual DrawableWidget *print_opaque(const char *text, unsigned x, unsigned y, unsigned text_size, uint16_t fg_color, uint16_t bg_color) = 0;
@@ -700,7 +688,7 @@ public:
      * @param width         Number of columns in the bitmap
      * @param height        Number of rows in the bitmap
      *
-     * @return              Pointer to the widget (allows for chaining method calls)
+     * @return              Pointer to the widget (allows chaining method calls)
      */
     virtual DrawableWidget *draw_rgb_bitmap(unsigned x, unsigned y, const uint16_t *data, unsigned width, unsigned height) = 0;
 };

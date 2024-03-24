@@ -386,7 +386,7 @@ void DrawableCanvas::set_visibility(bool new_visibility) {
     visible = new_visibility;
 }
 
-void DrawableCanvas::reset_compressed() { //todo this is to be used in many places, not just clear
+void DrawableCanvas::reset_compressed() {
     for (unsigned r = 0; r < DRAWABLE_H; ++r) {
         compressed_rows[r].pixel_count = DRAWABLE_W;
         compressed_rows[r].segment_count = 1;

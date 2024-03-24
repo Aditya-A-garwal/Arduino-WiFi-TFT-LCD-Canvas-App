@@ -61,6 +61,10 @@ public:
     unsigned get_border_radius() const;
 };
 
+/**
+ * @brief                   Class that provides a minimal and flexible implementation of `Frame` and also includes styling
+ *
+ */
 class Window : public Frame {
 
 protected:
@@ -76,19 +80,19 @@ protected:
     bool visible {true};
 
     /** X-coordinate of the window relative to its parent (offset from left-edge) */
-    unsigned widget_x {0};
+    unsigned widget_x;
     /** Y-coordinate of the window relative to its parent (offset from top-edge) */
-    unsigned widget_y {0};
+    unsigned widget_y;
 
     /** X-coordinate of the window relative to the display (offset from left-edge) */
-    unsigned widget_absolute_x {0};
+    unsigned widget_absolute_x;
     /** Y-coordinate of the window relative to the display (offset from top-edge) */
-    unsigned widget_absolute_y {0};
+    unsigned widget_absolute_y;
 
     /** Width of window (number of columns occupied) */
-    unsigned widget_w {0};
+    unsigned widget_w;
     /** Height of window (number of rows occupied) */
-    unsigned widget_h {0};
+    unsigned widget_h;
 
     /** List of children of the window */
     std::vector<BasicWidget *> children;
@@ -99,7 +103,7 @@ protected:
 public:
 
     /**
-     * @brief               Default constructor disabled (use the `create` method)\
+     * @brief               Default constructor disabled (use the `create` method)
      *
      */
     Window() = delete;
@@ -121,11 +125,11 @@ public:
     static Window *create(Frame *parent, unsigned x, unsigned y, unsigned width, unsigned height);
 
     /**
-     * @brief               Get the style information of the window
+     * @brief               Get a reference to the style object of the button to change its appearance
      *
      * @see                 `WindowStyle`
      *
-     * @return              A pointer to the style object of the window
+     * @return              Pointer to the style object
      *
      */
     WindowStyle *get_style();
