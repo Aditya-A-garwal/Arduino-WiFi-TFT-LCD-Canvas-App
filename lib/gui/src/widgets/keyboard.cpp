@@ -1,3 +1,10 @@
+/**
+ * @file                    keyboard.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implements the methods of the `Keyboard` class
+ *
+ */
+
 #include "widgets/keyboard.h"
 
 Keyboard::Keyboard(Frame *parent)
@@ -87,7 +94,7 @@ Keyboard::Keyboard(Frame *parent)
     }
 }
 
-void Keyboard::assign_keys() {
+void Keyboard::update_keys() {
 
     for (unsigned i = 1, idx = NUM_KEYS[0]; i < (NUM_ROWS-1); ++i) {
         for (unsigned j = 0; j < NUM_KEYS[i]; ++j, ++idx) {
@@ -107,7 +114,7 @@ Keyboard *Keyboard::create(Frame *parent) {
 
 Keyboard *Keyboard::set_shift_index(unsigned new_shift_i) {
     shift_i = new_shift_i;
-    assign_keys();
+    update_keys();
     dirty = true;
 }
 
@@ -210,7 +217,7 @@ bool Keyboard::propagate_release(unsigned x, unsigned y) {
     if (shift->propagate_release(x, y)) {
 
         (++shift_i) %= 3;
-        assign_keys();
+        update_keys();
 
         release_info.shift = 1;
         if (event_queue != nullptr && on_release != nullptr) {
