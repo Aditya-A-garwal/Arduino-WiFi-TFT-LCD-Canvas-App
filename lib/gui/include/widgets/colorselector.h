@@ -1,3 +1,10 @@
+/**
+ * @file                    colorselector.h
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   File that declares the `ColorSelector` class, which is used to create a grid of colors to pick from from
+ *
+ */
+
 #ifndef __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_COLOR_SELECTOR_H__
 #define __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_COLOR_SELECTOR_H__
 
@@ -8,6 +15,9 @@ class ColorSelector : public BasicWidget, public InteractiveWidget {
 
 protected:
 
+    /** The cooldown period between two pressed (used to prevent "bouncing", where a single press is detected as multiple) */
+    constexpr static unsigned DEBOUNCE_THRESH = 200;
+
     constexpr static unsigned PAINT_RADIUS = 12;
     constexpr static unsigned H_PAD = 12;
     constexpr static unsigned V_PAD = 12;
@@ -15,37 +25,91 @@ protected:
     constexpr static unsigned WIDTH = (H_PAD * (3 + 1)) + (PAINT_RADIUS * (3 * 2));
     constexpr static unsigned HEIGHT = (V_PAD * (3 + 1)) + (PAINT_RADIUS * (3 * 2));
 
+    /** Reference to parent frame */
     Frame *parent {nullptr};
 
+    /** Flag that indicates if the bitmap is dirty or not */
     bool dirty {false};
+    /** Flag that indicates if the bitmap's visibility has been changed or not */
     bool visibility_changed {false};
-
+    /** Flag to indicate if the bitmap is hidden or visible */
     bool visible {true};
+    /** Flag to indicate if the bitmap is in a pressed state or not */
     bool pressed {false};
+    /** Flag to indicate if interacting with the bitmap is enabled or disabled */
     bool enabled {true};
 
-    unsigned widget_x {0};
-    unsigned widget_y {0};
+    /** X-coordinate of the color selector relative to its parent (offset from left-edge) */
+    unsigned widget_x;
+    /** Y-coordinate of the color selector relative to its parent (offset from top-edge) */
+    unsigned widget_y;
 
-    unsigned widget_absolute_x {0};
-    unsigned widget_absolute_y {0};
+    /** X-coordinate of the color selector relative to the display (offset from left-edge) */
+    unsigned widget_absolute_x;
+    /** Y-coordinate of the color selector relative to the display (offset from top-edge) */
+    unsigned widget_absolute_y;
 
+    /** Width of color selector (number of columns occupied) */
+    unsigned widget_w;
+    /** Height of color selector (number of rows occupied) */
+    unsigned widget_h;
+
+    /** Array of 16-bit colors to show */
     uint16_t colors[9] {};
 
+    /** Function to call when the bitmap is pressed */
     callback_t on_press {nullptr};
+    /** Function to call when the bitmap is released */
     callback_t on_release {nullptr};
 
+    /** Pointer to arguments passed to callbacks */
+    unsigned *args {nullptr};
+
+    /** Reference to event queue for posting events */
     RingQueueInterface<callback_event_t> *event_queue {nullptr};
 
-    unsigned *args {nullptr};
+    /** The epoch when the widget was last pressed */
+    unsigned last_press_epoch {0};
 
 public:
 
+    /**
+     * @brief               Default constructor disabled (use the `create` method)
+     *
+     */
     ColorSelector() = delete;
 
+    /**
+     * @brief               Dynamically create a new color selector instance
+     *
+     * @param parent        The frame that should own this color selector
+     * @param x             X-coordinate of the color selector, within `parent` (offset from left-edge)
+     * @param y             Y-coordinate of the color selector, within `parent` (offset from top-edge)
+     *
+     * @return              A pointer to the color selector instance
+     *
+     */
     static ColorSelector *create(Frame *parent, unsigned x, unsigned y);
 
+    /**
+     * @brief               Set the color at a particular position
+     *
+     * @param pos           Position of the color (starting from the top-left and moving right and down)
+     * @param new_color     16-bit color
+     *
+     * @return              Pointer to the color selector (allows chaining method calls)
+     *
+     */
     ColorSelector *set_color(unsigned pos, uint16_t new_color);
+
+    /**
+     * @brief               Get the color at a particular position
+     *
+     * @param pos           Position of the color (starting from the top-left and moving right and down)
+     *
+     * @return              16-bit color at the position
+     *
+     */
     uint16_t get_color(unsigned pos) const;
 
     // BasicWidget overrides
@@ -101,6 +165,14 @@ public:
 
 protected:
 
+    /**
+     * @brief               Construct a new Color Selector object
+     *
+     * @param parent        The frame that should own this color selector
+     * @param x             X-coordinate of the color selector, within `parent` (offset from left-edge)
+     * @param y             Y-coordinate of the color selector, within `parent` (offset from top-edge)
+     *
+     */
     ColorSelector(Frame *parent, unsigned x, unsigned y);
 };
 

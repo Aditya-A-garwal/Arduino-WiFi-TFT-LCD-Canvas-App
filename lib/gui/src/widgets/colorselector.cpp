@@ -1,3 +1,10 @@
+/**
+ * @file                    colorselector.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implements the methods of the `ColorSelector` class
+ *
+ */
+
 #include "widgets/colorselector.h"
 
 ColorSelector::ColorSelector(Frame *parent, unsigned x, unsigned y)
@@ -131,6 +138,15 @@ bool ColorSelector::propagate_press(unsigned x, unsigned y) {
 
     if (pressed || !enabled) {
         return true;
+    }
+
+    {
+        unsigned cur_epoch = millis();
+        if ((cur_epoch - last_press_epoch) < DEBOUNCE_THRESH) {
+            return true;
+        }
+
+        last_press_epoch = cur_epoch;
     }
 
     pressed = true;
