@@ -1,3 +1,10 @@
+/**
+ * @file                    pensizeselector.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implements the methods of the `PenSizeSelector` class
+ *
+ */
+
 #include "widgets/pensizeselector.h"
 
 PenSizeSelector::PenSizeSelector(Frame *parent, unsigned x, unsigned y)
@@ -34,16 +41,16 @@ uint16_t PenSizeSelector::get_size(unsigned pos) const {
     return sizes[pos];
 }
 
-PenSizeSelector *PenSizeSelector::set_active_size(unsigned pos) {
+PenSizeSelector *PenSizeSelector::set_selected_size(unsigned pos) {
     if (pos > sizeof(sizes) / sizeof(sizes[0])) {
         return this;
     }
 
     dirty = true;
-    active_size = pos;
+    selected_size = pos;
     return this;
 }
-uint16_t PenSizeSelector::get_active_size() const { return sizes[active_size]; }
+uint16_t PenSizeSelector::get_selected_size() const { return sizes[selected_size]; }
 
 PenSizeSelector *PenSizeSelector::set_color(uint16_t new_color) {
     if (new_color == color) {
@@ -96,7 +103,7 @@ void PenSizeSelector::draw() {
                                         ? (blend_color(blend_color(BLACK, WHITE, 12), BLUE, 10))
                                         : (color));
 
-        parent->draw_circle(x, y, s + 3, (c == active_size)
+        parent->draw_circle(x, y, s + 3, (c == selected_size)
                                             ? WHITE
                                             : BLACK);
     }
@@ -180,7 +187,7 @@ bool PenSizeSelector::propagate_press(unsigned x, unsigned y) {
         }
 
         if (event_queue != nullptr && on_press != nullptr) {
-            event_queue->push({on_press, (unsigned *)&sizes[active_size]});
+            event_queue->push({on_press, (unsigned *)&sizes[selected_size]});
         }
         break;
     }
@@ -218,9 +225,9 @@ bool PenSizeSelector::propagate_release(unsigned x, unsigned y) {
             continue;
         }
 
-        set_active_size(c);
+        set_selected_size(c);
         if (event_queue != nullptr && on_release != nullptr) {
-            event_queue->push({on_release, (unsigned *)&sizes[active_size]});
+            event_queue->push({on_release, (unsigned *)&sizes[selected_size]});
         }
         break;
     }
