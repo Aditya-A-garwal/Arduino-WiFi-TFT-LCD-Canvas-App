@@ -1,3 +1,10 @@
+/**
+ * @file                    bitmap.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implements the methods of the `Bitmap` class
+ *
+ */
+
 #include "widgets/button.h"
 
 Button::Button(Frame *parent, unsigned x, unsigned y, unsigned width, unsigned height)
