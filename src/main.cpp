@@ -632,9 +632,6 @@ void init_connection_view() {
 
     pass_label
     ->set_message("WiFi Password:")
-#ifdef DEFAULT_SERVER_ADDR
-    ->set_message(DEFAULT_SERVER_ADDR)
-#endif
     ->get_style()
     ->set_text_size(2)
     ->set_horizontal_alignment(LabelStyle::HorizontalAlignment::LEFT_ALIGN)
@@ -667,6 +664,9 @@ void init_connection_view() {
     ->set_event_queue(app->get_event_queue())
     ->set_onrelease(open_keyboard)
     ->set_args((unsigned *)addr_box)
+#ifdef DEFAULT_SERVER_ADDR
+    ->set_message(DEFAULT_SERVER_ADDR)
+#endif
     ->get_style()
     ->set_text_size(2)
     ->set_horizontal_alignment(LabelStyle::HorizontalAlignment::LEFT_ALIGN)
