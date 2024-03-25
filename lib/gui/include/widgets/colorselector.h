@@ -11,6 +11,10 @@
 #include "widget.h"
 #include "frame.h"
 
+/**
+ * @brief                   Class that implements a widget which is used to create a grid of colors to pick from from
+ *
+ */
 class ColorSelector : public BasicWidget, public InteractiveWidget {
 
 protected:
@@ -49,11 +53,6 @@ protected:
     /** Y-coordinate of the color selector relative to the display (offset from top-edge) */
     unsigned widget_absolute_y;
 
-    /** Width of color selector (number of columns occupied) */
-    unsigned widget_w;
-    /** Height of color selector (number of rows occupied) */
-    unsigned widget_h;
-
     /** Array of 16-bit colors to show */
     uint16_t colors[9] {};
 
@@ -82,11 +81,13 @@ public:
     /**
      * @brief               Dynamically create a new color selector instance
      *
+     * @warning             This method returns a nullptr if a color selector instance could not be created
+     *
      * @param parent        The frame that should own this color selector
      * @param x             X-coordinate of the color selector, within `parent` (offset from left-edge)
      * @param y             Y-coordinate of the color selector, within `parent` (offset from top-edge)
      *
-     * @return              A pointer to the color selector instance
+     * @return              A pointer to the color selector instance (nullptr if the creation fails)
      *
      */
     static ColorSelector *create(Frame *parent, unsigned x, unsigned y);
