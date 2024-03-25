@@ -394,3 +394,96 @@ void DrawableCanvas::reset_compressed() {
         compressed_rows[r].segments[0].size = DRAWABLE_W;
     }
 }
+
+signed DrawableCanvas::BufferedWiFiWriter::connect(WiFiClient *ptr, const char *server_ip, const uint16_t server_port) {
+    client = ptr;
+    return client->connect(IPAddress(server_ip), server_port);
+}
+
+void DrawableCanvas::BufferedWiFiWriter::write(const uint8_t *bytes, unsigned len) {
+
+    unsigned n;
+
+    while (len > 0) {
+
+        if (used == BUFFER_CAPACITY) {
+            flush();
+        }
+
+        n = min(len, BUFFER_CAPACITY - used);
+        for (const uint8_t *ptr = bytes; ptr != &bytes[n]; ++ptr) {
+            buf[used++] = *ptr;
+        }
+        len -= n;
+        bytes += n;
+    }
+}
+
+void DrawableCanvas::BufferedWiFiWriter::flush() {
+
+    unsigned n;
+
+    n = client->write(buf, used);
+    if (n != used) {
+        flag = false;
+    }
+    used = 0;
+}
+
+void DrawableCanvas::BufferedWiFiWriter::stop() {
+    flush();
+    client->flush();
+    client->stop();
+
+    client = nullptr;
+}
+
+unsigned DrawableCanvas::Compressor::compress(canvas_row_t *row, unsigned max_segments, uint8_t *raw_data, unsigned raw_data_len) {
+
+    unsigned finished = 0;
+
+    for (unsigned l = 0, r; l < raw_data_len; l = r) {
+        for (r = 1 + l; r <= raw_data_len; ++r) {
+            if (r == raw_data_len || raw_data[l] != raw_data[r]) {
+                break;
+            }
+        }
+
+        if (++finished > max_segments) {
+            row->pixel_count = l;
+            row->segment_count = finished - 1;
+
+            return l;
+        }
+
+        row->segments[finished - 1].code = raw_data[l];
+        row->segments[finished - 1].size = r - l;
+    }
+
+    row->pixel_count = raw_data_len;
+    row->segment_count = finished;
+
+    return raw_data_len;
+}
+
+unsigned DrawableCanvas::Compressor::uncompress(canvas_row_t *row, uint8_t *raw_data, unsigned raw_data_len) {
+
+    uint8_t code;
+    unsigned size;
+
+    if (row->segment_count == 0) {
+        return 0;
+    }
+
+    for (unsigned s = 0, idx = 0; s < row->segment_count; ++s) {
+
+        code = row->segments[s].code;
+        size = row->segments[s].size;
+
+        while (size--) {
+            raw_data[idx++] = code;
+        }
+    }
+
+    return row->pixel_count;
+}
