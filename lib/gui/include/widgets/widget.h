@@ -381,7 +381,7 @@ public:
     };
 
     /**
-     * @brief               Set the callback to be called when the widget is pressed
+     * @brief               Set the function to be called when the widget is pressed
      *
      * @param cb            Reference to the callback function
      *
@@ -391,7 +391,7 @@ public:
     virtual InteractiveWidget *set_onpress(callback_t new_onpress) = 0;
 
     /**
-     * @brief               Reset the callback to be called when the widget is pressed
+     * @brief               Reset the function to be called when the widget is pressed
      *
      * @return              Pointer to the widget (allows chaining method calls)
      *
@@ -399,7 +399,7 @@ public:
     virtual InteractiveWidget *reset_onpress() = 0;
 
     /**
-     * @brief               Set the callback to be called when the widget is released
+     * @brief               Set the function to be called when the widget is released
      *
      * @param cb            Reference to the callback function
      *
@@ -409,7 +409,7 @@ public:
     virtual InteractiveWidget *set_onrelease(callback_t new_onrelease) = 0;
 
     /**
-     * @brief               Reset the callback to be called when the widget is released
+     * @brief               Reset the function to be called when the widget is released
      *
      * @return              Pointer to the widget (allows chaining method calls)
      *
@@ -422,6 +422,7 @@ public:
      * @param new_event_queue   Mutable reference to queue which should be used
      *
      * @return              Pointer to the widget (allows chaining method calls)
+     *
      */
     virtual InteractiveWidget *set_event_queue(RingQueueInterface<callback_event_t> *new_event_queue) = 0;
 

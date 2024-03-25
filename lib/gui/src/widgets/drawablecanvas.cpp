@@ -1,3 +1,10 @@
+/**
+ * @file                    button.cpp
+ * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
+ * @brief                   This file implements the methods of the `Button` class
+ *
+ */
+
 #include "widgets/drawablecanvas.h"
 
 static DrawableCanvas::Compressor::segment_t segments1[(DrawableCanvas::DRAWABLE_W + 1) / 2];
@@ -97,7 +104,7 @@ DrawableCanvas *DrawableCanvas::draw_at(unsigned x, unsigned y) {
         if (compressed_rows[r].pixel_count < col_l) {
             continue;
         }
-        Compressor::uncompress(&compressed_rows[r], raw_pixels, DRAWABLE_W);
+        Compressor::decompress(&compressed_rows[r], raw_pixels, DRAWABLE_W);
         final_pixel = compressed_rows[r].pixel_count - 1;
 
         for (unsigned c = col_l; c <= col_h; ++c) {
@@ -171,7 +178,7 @@ bool DrawableCanvas::save_to_server(uint8_t slot) {
     constexpr static unsigned MAX_SEGMENTS = (DRAWABLE_W + 1) / 2;
     uint8_t codes[DRAWABLE_W];
 
-    BufferedWiFiWriter client;
+    BufferedTCPStream client;
 
     if (strnlen(server_ip, 16) == 0 || !client.connect(&sock, server_ip, server_port)) {
 
@@ -196,7 +203,7 @@ bool DrawableCanvas::save_to_server(uint8_t slot) {
 
     for (unsigned r = 0; r < DRAWABLE_H; ++r) {
 
-        Compressor::uncompress(&compressed_rows[r], codes, DRAWABLE_W);
+        Compressor::decompress(&compressed_rows[r], codes, DRAWABLE_W);
         for (unsigned c = compressed_rows[r].pixel_count; c < DRAWABLE_W; ++c) {
             codes[c] = color_2_code(parent->get_at(widget_x + 1 + c, widget_y + 1 + r));
         }
@@ -395,42 +402,44 @@ void DrawableCanvas::reset_compressed() {
     }
 }
 
-signed DrawableCanvas::BufferedWiFiWriter::connect(WiFiClient *ptr, const char *server_ip, const uint16_t server_port) {
+signed DrawableCanvas::BufferedTCPStream::connect(WiFiClient *ptr, const char *server_ip, const uint16_t server_port) {
     client = ptr;
+    size = 0;
+    flag = false;
     return client->connect(IPAddress(server_ip), server_port);
 }
 
-void DrawableCanvas::BufferedWiFiWriter::write(const uint8_t *bytes, unsigned len) {
+void DrawableCanvas::BufferedTCPStream::write(const uint8_t *bytes, unsigned len) {
 
     unsigned n;
 
     while (len > 0) {
 
-        if (used == BUFFER_CAPACITY) {
+        if (size == BUFFER_CAPACITY) {
             flush();
         }
 
-        n = min(len, BUFFER_CAPACITY - used);
+        n = min(len, BUFFER_CAPACITY - size);
         for (const uint8_t *ptr = bytes; ptr != &bytes[n]; ++ptr) {
-            buf[used++] = *ptr;
+            buf[size++] = *ptr;
         }
         len -= n;
         bytes += n;
     }
 }
 
-void DrawableCanvas::BufferedWiFiWriter::flush() {
+void DrawableCanvas::BufferedTCPStream::flush() {
 
     unsigned n;
 
-    n = client->write(buf, used);
-    if (n != used) {
+    n = client->write(buf, size);
+    if (n != size) {
         flag = false;
     }
-    used = 0;
+    size = 0;
 }
 
-void DrawableCanvas::BufferedWiFiWriter::stop() {
+void DrawableCanvas::BufferedTCPStream::stop() {
     flush();
     client->flush();
     client->stop();
@@ -466,7 +475,7 @@ unsigned DrawableCanvas::Compressor::compress(canvas_row_t *row, unsigned max_se
     return raw_data_len;
 }
 
-unsigned DrawableCanvas::Compressor::uncompress(canvas_row_t *row, uint8_t *raw_data, unsigned raw_data_len) {
+unsigned DrawableCanvas::Compressor::decompress(canvas_row_t *row, uint8_t *raw_data, unsigned raw_data_len) {
 
     uint8_t code;
     unsigned size;
