@@ -1,7 +1,7 @@
 #include "widgets/drawablecanvas.h"
 
-static Compressor::segment_t segments1[(DrawableCanvas::DRAWABLE_W + 1) / 2];
-static Compressor::segment_t segments2[DrawableCanvas::DRAWABLE_H][DrawableCanvas::MAX_INLINE_COMPRESSED_SEGMENTS];
+static DrawableCanvas::Compressor::segment_t segments1[(DrawableCanvas::DRAWABLE_W + 1) / 2];
+static DrawableCanvas::Compressor::segment_t segments2[DrawableCanvas::DRAWABLE_H][DrawableCanvas::MAX_INLINE_COMPRESSED_SEGMENTS];
 static WiFiClient sock;
 
 DrawableCanvas::DrawableCanvas(Frame *parent, unsigned x, unsigned y)
