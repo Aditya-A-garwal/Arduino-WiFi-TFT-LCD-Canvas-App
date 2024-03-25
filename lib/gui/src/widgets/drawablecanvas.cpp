@@ -405,7 +405,7 @@ void DrawableCanvas::reset_compressed() {
 signed DrawableCanvas::BufferedTCPStream::connect(WiFiClient *ptr, const char *server_ip, const uint16_t server_port) {
     client = ptr;
     size = 0;
-    flag = false;
+    flag = true;
     return client->connect(IPAddress(server_ip), server_port);
 }
 
