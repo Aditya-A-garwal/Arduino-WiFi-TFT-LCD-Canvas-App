@@ -1,7 +1,7 @@
 /**
- * @file                    button.cpp
+ * @file                    drawablecanvas.cpp
  * @author                  Aditya Agarwal (aditya.agarwal@dumblebots.com)
- * @brief                   This file implements the methods of the `Button` class
+ * @brief                   This file implements the methods of the `DrawableCanvas` class
  *
  */
 

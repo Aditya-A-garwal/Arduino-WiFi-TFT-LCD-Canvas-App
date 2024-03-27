@@ -8,8 +8,8 @@
 #ifndef __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_PEN_SIZE_SELECTOR_H__
 #define __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_PEN_SIZE_SELECTOR_H__
 
-#include "widget.h"
-#include "frame.h"
+#include "widgets/widget.h"
+#include "widgets/frame.h"
 
 /**
  * @brief                   Class that implements a widget which is used to create row of pen-sizes to pick from from

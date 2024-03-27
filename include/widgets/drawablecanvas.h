@@ -8,11 +8,13 @@
 #ifndef __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_DRAWABLE_CANVAS_H__
 #define __ARDUINO_WIFI_TFT_LCD_CANVAS_APP_WIDGETS_DRAWABLE_CANVAS_H__
 
-#include "widget.h"
-#include "frame.h"
+#include "widgets/widget.h"
+#include "widgets/frame.h"
 
 #include "WiFiS3.h"
 #include "cstring"
+
+class WiFiClient;
 
 /**
  * @brief                   Class that provides a canvas to draw on
