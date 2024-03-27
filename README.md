@@ -190,4 +190,7 @@ Logically, the code is organized into three parts-
 2. *Touchscreen Controller*- This provides a single class to use the touchscreen. The class provided by this library is a wrapper around the Adafruit Touchscreen library and provides events for the GUI Framework. This is found `include/touchscreen_driver.h` and `src/touchscreen_driver.cpp`.
 3. *Application Code*- This consists of the application, including the instantiation, placement, styling of widgets and callbacks. It can be found in `src/main.cpp`.
 
-<!-- ## Architecture Of the Program -->
+
+## Architecture
+
+For a detailed look at the GUI framework's architecture, see [lib/gui/README.md](/lib/gui/README.md).
