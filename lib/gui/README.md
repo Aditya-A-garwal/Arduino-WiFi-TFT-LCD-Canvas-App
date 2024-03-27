@@ -47,7 +47,7 @@ The framework provides the `App` class, which acts as the root of the widget-tre
 
 A minimal program to demonstrate this is shown below -
 
-```arduino
+```cpp
 #include "Arduino.h"
 
 #include "Adafruit_GFX.h"
@@ -163,7 +163,7 @@ flowchart
 
 All widgets that implement `InteractiveWidget` allow the registration of callbacks. The following example uses two buttons and callbacks to switch between views -
 
-```arduino
+```cpp
 #include "Arduino.h"
 
 #include "Adafruit_GFX.h"
