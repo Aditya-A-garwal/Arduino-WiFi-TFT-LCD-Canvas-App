@@ -106,9 +106,9 @@ At any time, the clear button (Big red button marked "C") can be used to clear t
 <table>
         <thead>
             <tr>
-                <th style="width: 31%"><img src="readme-images/3.jpg" alt="Drawing On the Canvas"></th>
-                <th style="width: 31%"><img src="readme-images/4.gif" alt="Saving an Image"></th>
-                <th style="width: 31%"><img src="readme-images/5.jpg" alt="Connection Failure"></th>
+                <th width="31%"><img src="readme-images/3.jpg" alt="Drawing On the Canvas"></th>
+                <th width="31%"><img src="readme-images/4.gif" alt="Saving an Image"></th>
+                <th width="31%"><img src="readme-images/5.jpg" alt="Connection Failure"></th>
             </tr>
         </thead>
         <tbody>
@@ -127,8 +127,8 @@ To connect to WiFi, click on the button marked WiFi (below save) or go to the "D
     <table>
         <thead>
             <tr>
-                <th style="width: 50%"><img src="readme-images/6.jpg" alt="WiFi Connection Form"></th>
-                <th style="width: 50%"><img src="readme-images/7.gif" alt="Typing With Keyboard"></th>
+                <th width="50%" ><img src="readme-images/6.jpg" alt="WiFi Connection Form"></th>
+                <th width="50%" ><img src="readme-images/7.gif" alt="Typing With Keyboard"></th>
             </tr>
         </thead>
         <tbody>
@@ -141,8 +141,8 @@ To connect to WiFi, click on the button marked WiFi (below save) or go to the "D
     <table>
         <thead>
             <tr>
-                <th style="width: 50%"><img src="readme-images/8.jpg" alt="Successful Connection"></th>
-                <th style="width: 50%"><img src="readme-images/9.png" alt="Server showing Address"></th>
+                <th width="50%" ><img src="readme-images/8.jpg" alt="Successful Connection"></th>
+                <th width="50%" ><img src="readme-images/9.png" alt="Server showing Address"></th>
             </tr>
         </thead>
         <tbody>
