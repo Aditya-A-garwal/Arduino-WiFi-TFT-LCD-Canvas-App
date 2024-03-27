@@ -13,7 +13,7 @@
 
 This repository contains a program to create a **freely paintable canvas** with an **Arduino UNO R4 WiFi** and a **3.5" ILI9486 touch screen display shield**. The contents of the canvas can be **saved to and loaded from a server** running on your **PC/cloud VM**. Connections to WiFi can be made on the fly using a **full android-style keyboard**.
 
-Overall, the project attempts to provide a smartphone-like experience using just the Arduino UNO R4 WiFi and Display Shield, both of which are relatively inexpensive and easy to acquire. Pictures of the App are included the following sections.
+Overall, the project attempts to provide a **smartphone-like experience** using just the Arduino UNO R4 WiFi and Display Shield, both of which are relatively inexpensive and easy to acquire. This **enhances the ability of the Arduino to drive sensors and actuators**. Pictures of the App are included the following sections.
 <!--! ADD LINK TO YOUTUBE VIDEO -->
 
 |![Image of LCD Touch Shield from Top](readme-images/LCD_top.png)|![Image of LCD Touch Shield from Bottom](readme-images/LCD_bottom.png)|
@@ -28,7 +28,7 @@ Most 3.5" LCD Touch displays use the ILI9486 Display Driver and include a resist
 
 The program has been written using PlatformIO, and has been tested to work on the [Arduino UNO R4 WiFi](https://docs.arduino.cc/hardware/uno-r4-wifi/).
 
-**Note- While the drawing can be used without any connectivity, saving and loading require a WiFi network with its credentials known, as well as the server program (found [here](https://github.com/Aditya-A-garwal/Arduino-WiFi-TFT-LCD-Canvas-Server)). The server can directly be installed using Rust too, as explained in the next section.**
+**Note- While the drawing can be used without any connectivity, saving and loading require a WiFi network with its credentials known, as well as the server program (found at [this repository](https://github.com/Aditya-A-garwal/Arduino-WiFi-TFT-LCD-Canvas-Server)). The server can directly be installed using Rust too, as explained in the next section. It is a lightweight process and does not need any special hardware to run.**
 
 For a simpler version of this program that works on the Arduino [UNO R4 Minima](https://docs.arduino.cc/hardware/uno-r4-minima/) and [UNO R3](https://docs.arduino.cc/hardware/uno-rev3/), see [this](https://github.com/Aditya-A-garwal/Arduino-TFT-LCD-3-5-Canvas-Paint).
 
@@ -63,7 +63,7 @@ Optionally, you can create the `include/arduino_secrets.h` file with the followi
 
 This file is not tracked by git and are used as default values for textboxes while connected to WiFi.
 
-The server has been written in Rust and can be downloaded using [`cargo`](https://crates.io/) by simply running the following command-
+To save and load images, the server program has to be run on a machine that the Arduino can access over WiFi, such as your PC or a cloud VM with a public facing IP (and open ports). The server has been written in Rust and can be downloaded using [`cargo`](https://crates.io/) by simply running the following command-
 
 ```shell
 rustup default nightly       # required
