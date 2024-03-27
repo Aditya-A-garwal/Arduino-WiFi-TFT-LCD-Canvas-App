@@ -113,9 +113,9 @@ At any time, the clear button (Big red button marked "C") can be used to clear t
         </thead>
         <tbody>
             <tr>
-                <td style="text-align: center">Drawing On the Canvas</td>
-                <td style="text-align: center">Saving an Image</td>
-                <td style="text-align: center">Connection Failure</td>
+                <td align="center">Drawing On the Canvas</td>
+                <td align="center">Saving an Image</td>
+                <td align="center">Connection Failure</td>
             </tr>
         </tbody>
     </table>
@@ -133,8 +133,8 @@ To connect to WiFi, click on the button marked WiFi (below save) or go to the "D
         </thead>
         <tbody>
             <tr>
-                <td style="text-align: center">WiFi Connection Form</td>
-                <td style="text-align: center">Typing With Keyboard</td>
+                <td align="center">WiFi Connection Form</td>
+                <td align="center">Typing With Keyboard</td>
             </tr>
         </tbody>
     </table>
@@ -147,8 +147,8 @@ To connect to WiFi, click on the button marked WiFi (below save) or go to the "D
         </thead>
         <tbody>
             <tr>
-                <td style="text-align: center">Successful Connection</td>
-                <td style="text-align: center">Server Showing Address</td>
+                <td align="center">Successful Connection</td>
+                <td align="center">Server Showing Address</td>
             </tr>
         </tbody>
     </table>
