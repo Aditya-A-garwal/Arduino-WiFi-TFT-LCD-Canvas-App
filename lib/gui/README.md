@@ -2,7 +2,7 @@
 
 This directory contains the GUI framework that has been used to build the graphical portion of the Canvas App. The framework greatly abstracts over the graphics library and serves the following functions -
 
-1. Facilitates the creation of a widget-tree.
+1. Facilitates the creation of a **widget-tree**.
 2. Allows complex **layouting and styling** of widgets at runtime (**including overlapping windows**).
 3. Automatically determines (to a large degree) what widgets are **dirty and re-paints them** when necessary (**while accounting for overlapping and intersecting widgets**) without an in-memory buffer.
 4. Provides **event propagation** down the widget-tree.
@@ -14,9 +14,9 @@ The framework provides the following interfaces (in [`include/widgets/widget.h`]
 |Interface Name|Purpose|
 |-:|-|
 |[`BasicWidget`](/lib/gui/include/widgets/widget.h)|Must be implemented by all widgets.|
-|[`InteractiveWidget`](/lib/gui/include/widgets/widget.h)|Must be implemented by all widgets that accept setting a callback for the press/release events.|
-|[`DrawableWidget`](/lib/gui/include/widgets/widget.h)|Must be implemented by all widgets that other widgets can draw on.|
-|[`Frame`](/lib/gui/include/widgets/frame.h)|Must be implemented by all widgets that can contain other widgets, such as Windows.|
+|[`InteractiveWidget`](/lib/gui/include/widgets/widget.h)|Must be implemented by all widgets that accept setting a callback for the press/release events. **A widget that updates its own state/dirtyness does not have to implement this. Only implement this when custom logic needs to be executed outside the widget.**|
+|[`DrawableWidget`](/lib/gui/include/widgets/widget.h)|Must be implemented by all widgets that other widgets can draw on. **This is for internal use only.**|
+|[`Frame`](/lib/gui/include/widgets/frame.h)|Must be implemented by all widgets that can contain other widgets, such as Windows. This extends the contract set by `DrawableWidget`. |
 
 ## Default Widgets Provided by the Framework
 
@@ -95,7 +95,9 @@ void loop() {
 
     unsigned release_x, release_y, press_x, press_y;
     bool release_event {false}, press_event {false};
-    //! ADD TOUCH CONTROLLER LOGIC HERE
+
+    //! ADD TOUCH CONTROLLER LOGIC HERE TO POPULATE THE EVENT-RELATED VARIABLES
+    //! THIS HAS INTENTIONALLY BEEN LEFT OUT AS IT IS APPLICATION SPECIFIC
 
     if (release_event) {
         app->propagate_release(release_x, release_y);
@@ -241,7 +243,9 @@ void loop() {
 
     unsigned release_x, release_y, press_x, press_y;
     bool release_event {false}, press_event {false};
-    //! ADD TOUCH CONTROLLER LOGIC HERE
+
+    //! ADD TOUCH CONTROLLER LOGIC HERE TO POPULATE THE EVENT-RELATED VARIABLES
+    //! THIS HAS INTENTIONALLY BEEN LEFT OUT AS IT IS APPLICATION SPECIFIC
 
     if (release_event) {
         app->propagate_release(release_x, release_y);
@@ -273,8 +277,8 @@ In the above example, the callbacks will be called when the buttons are released
     second_button
     ->set_message("Goto 1")
     ->set_event_queue(app->get_event_queue())
--   ->set_onpress(second_button_cb)
-+   ->set_onrelease(second_button_cb)
+-   ->set_onrelease(second_button_cb)
++   ->set_onpress(second_button_cb)
     ->set_args((unsigned *)"two"); // optionally pass arguments
 ```
 
@@ -303,7 +307,7 @@ While the framework does provide a generous set of widgets to get started, many 
 1. All widgets must implement the `BasicWidget` interface.
 2. All widgets must maintain a flag to indicate if the widget has become dirty, i.e. it needs to be re-drawn. This flag must be set at the beginning of those methods which modify the state of the widget in such a way where it has to be re-drawn. This flag must be cleared at the beginning of the draw method.
 3. All widgets must maintain a flag to indicate if the visibility has changed, i.e. it needs to be cleared/re-drawn. This flag must be set at the beginning of those methods which modify the visibility of the widget. This flag must be cleared at the beginning of the draw and clear methods.
-4. All widgets that are not lead-nodes, i.e. they contain widgets within them, must implement the `Frame` interface.
+4. All widgets that are not leaf-nodes, i.e. they contain widgets within them, must implement the `Frame` interface.
 5. All widgets that provide registration of callbacks for the fundamental events (press and release) must implement the `InteractiveWidget` interface.
 
-2 and 3 are not implemented by default since some widgets and applications may choose to forego this/use an alternate for performance reasons.
+2 and 3 are almost standard across all widgets, yet are not implemented by default. This is because certain applications may choose to forego this/use an alternate for performance reasons.
