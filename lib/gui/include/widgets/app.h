@@ -35,7 +35,7 @@ class App : public BasicWidget, public DrawableWidget {
 
 protected:
 
-#ifdef READ_PIXEL_ENABLED
+#ifdef MCUFRIEND_KBV_H_
     using display_t = MCUFRIEND_kbv;
 #else
     using display_t = Adafruit_GFX;

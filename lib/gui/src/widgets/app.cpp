@@ -167,7 +167,7 @@ App *App::set_at(unsigned int x, unsigned int y, uint16_t color) {
 
 uint16_t App::get_at(unsigned int x, unsigned int y) const {
 
-#ifdef READ_PIXEL_ENABLED
+#ifdef MCUFRIEND_KBV_H_
     return display->readPixel(x, y);
 #else
     return 0;
