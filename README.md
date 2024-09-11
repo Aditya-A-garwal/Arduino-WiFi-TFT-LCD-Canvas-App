@@ -33,7 +33,7 @@ The program has been written using PlatformIO, and has been tested to work on th
 For a simpler version of this program that works on the Arduino [UNO R4 Minima](https://docs.arduino.cc/hardware/uno-r4-minima/) and [UNO R3](https://docs.arduino.cc/hardware/uno-rev3/), see [this](https://github.com/Aditya-A-garwal/Arduino-TFT-LCD-3-5-Canvas-Paint).
 
 > [!TIP]
-> A detailed tutorial on how to use this repository **with video demonstration** is available at https://dumblebots.com/2024/07/27/using-3-5-tft-lcd-display-ili9486-arduino-part-5-paint-app/. The tutorial includes a comprehensive explanation of the code.
+> A detailed tutorial on how to use this repository **with video demonstration** is available [here](https://projecthub.arduino.cc/AdityaAg/create-a-smartphone-like-device-with-the-arduino-uno-r4-wifi-multiple-apps-keyboard-dynamic-wifi-cloud-sync-95ccec) on the Arduino Project Hub.
 
 ## Building/Uploading With PlatformIO
 
